@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>My Article</title>
+  <style>
+    body {
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f9f9f9;
+      margin: 0;
+      padding: 2rem;
+      color: #333;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 1rem;
+    }
+
+    .pdf-container {
+      display: flex;
+      justify-content: center;
+      margin-top: 2rem;
+    }
+
+    iframe {
+      width: 100%;
+      max-width: 800px;
+      height: 600px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+    }
+
+    .download-link {
+      text-align: center;
+      margin-top: 1rem;
+    }
+
+    .download-link a {
+      color: #0066cc;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    .download-link a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>📄 My Article</h1>
+
+  <div class="pdf-container">
+    <iframe src="path-to-arab-revolt.pdf">
+      This browser does not support PDFs. 
+      <a href="path-to-arab-revolt.pdf">Download the PDF</a>.
+    </iframe>
+  </div>
+
+  <div class="download-link">
+    <p>If the PDF doesn't load, you can <a href="path-to-arab-revolt.pdf" target="_blank">open it in a new tab</a>.</p>
+  </div>
+
+</body>
+</html>
