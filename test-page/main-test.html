@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>My Personal Projects - Vaporwave Menu Edition</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Vaporwave/retro fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Orbitron:wght@700&display=swap" rel="stylesheet">
+  <!-- Font Awesome for icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+  <style>
+    body {
+      min-height: 100vh;
+      background: linear-gradient(135deg, #ffb6c1 0%, #b7eaff 50%, #c1c1ff 100%);
+      background-attachment: fixed;
+      font-family: 'Orbitron', 'Press Start 2P', monospace, Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      overflow-x: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: stretch;
+    }
+    .sidebar {
+      width: 260px;
+      background: linear-gradient(120deg, #b7eaff 80%, #ffb6c1 100%);
+      border-right: 6px double #ff70a6;
+      box-shadow: 0 0 18px 0 #b7eaff66;
+      padding: 2rem 0 2rem 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      position: relative;
+      z-index: 2;
+    }
+    .sidebar h2 {
+      font-family: 'Press Start 2P', monospace;
+      color: #6c5ce7;
+      margin-bottom: 2rem;
+      font-size: 1.1rem;
+      letter-spacing: 0.07em;
+      text-shadow: 0 1px 0 #fff;
+    }
+    .menu {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 1.7rem;
+      margin-bottom: 2rem;
+    }
+    .menu button {
+      background: rgba(255,255,255,0.15);
+      color: #6c5ce7;
+      border: 2.5px solid #fff;
+      border-radius: 9px;
+      font-family: 'Orbitron', Arial, sans-serif;
+      font-size: 1.05rem;
+      font-weight: 700;
+      padding: 0.7rem 1.2rem;
+      margin: 0 1.3rem;
+      text-align: left;
+      cursor: pointer;
+      transition: background 0.17s, color 0.17s, border-color 0.17s;
+      outline: none;
+      display: flex;
+      align-items: center;
+      gap: 0.85em;
+      box-shadow: 0 1px 12px rgba(255,105,180,0.08);
+      position: relative;
+    }
+    .menu button.active,
+    .menu button:hover {
+      background: linear-gradient(90deg, #ffb6c1 40%, #b7eaff 90%);
+      color: #ff70a6;
+      border-color: #ff70a6;
+      box-shadow: 0 4px 18px rgba(255,105,180,0.13);
+    }
+    .sidebar .fa-music {
+      position: absolute;
+      bottom: 1.5rem;
+      left: 50%;
+      transform: translateX(-50%);
+      color: #ff70a6;
+      font-size: 2.7rem;
+      opacity: 0.33;
+      animation: floaty 7s ease-in-out infinite alternate;
+    }
+    @keyframes floaty {
+      0% { transform: translateX(-50%) translateY(0) rotate(-8deg);}
+      100% { transform: translateX(-50%) translateY(18px) rotate(8deg);}
+    }
+    /* Main content area */
+    .main-content {
+      flex: 1;
+      background: rgba(255,255,255,0.85);
+      border-radius: 0 24px 24px 0;
+      box-shadow: 0 8px 64px 0 rgba(255,105,180,0.11), 0 2px 12px rgba(137,207,240,0.09);
+      margin: 2rem 2rem 2rem 0;
+      padding: 2rem 2.5rem;
+      position: relative;
+      min-width: 340px;
+      display: flex;
+      flex-direction: column;
+      z-index: 2;
+      overflow: hidden;
+    }
+    .main-content h1 {
+      font-family: 'Press Start 2P', 'Orbitron', monospace;
+      color: #ff70a6;
+      margin-bottom: 1.8rem;
+      font-size: 2.2rem;
+      letter-spacing: 0.09em;
+      text-shadow: 0 4px 20px #b7eaff, 0 1px 0 #fff;
+      background: linear-gradient(90deg,#ff70a6,#c1c1ff,#b7eaff,#ffb6c1);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .section-content {
+      display: none;
+      animation: fadeIn 0.7s;
+    }
+    .section-content.active {
+      display: block;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(24px);}
+      to { opacity: 1; transform: translateY(0);}
+    }
+    /* Section lists */
+    .project-list {
+      list-style: none;
+      padding: 0;
+      margin: 0 0 1rem 0;
+      font-size: 1.09rem;
+      color: #444;
+      font-family: 'Orbitron', Arial, sans-serif;
+    }
+    .project-list li {
+      margin-bottom: 0.7rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5em;
+    }
+    .project-list a {
+      color: #6c5ce7;
+      background: rgba(255,255,255,0.13);
+      padding: 0.22rem 0.6rem;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: 700;
+      transition: color 0.15s, background 0.16s, box-shadow 0.17s;
+      border-bottom: 2px dashed #b7eaff;
+      box-shadow: 0 1px 10px rgba(255,105,180,0.07);
+    }
+    .project-list a:hover {
+      color: #ff70a6;
+      background: rgba(137,207,240,0.13);
+      border-bottom: 2px solid #ff70a6;
+      box-shadow: 0 2px 16px rgba(255,105,180,0.13);
+      text-decoration: underline;
+    }
+    .placeholder {
+      color: #6c5ce7;
+      font-style: italic;
+      margin-top: 1rem;
+      font-size: 0.99rem;
+      opacity: 0.65;
+      font-family: 'Press Start 2P', monospace;
+      letter-spacing: 0.03em;
+    }
+    /* Vaporwave SVG BG */
+    .main-content .vaporwave-bg {
+      position: absolute;
+      left: -50px; top: -30px; width: 600px; height: 260px;
+      z-index: 0;
+      pointer-events: none;
+      opacity: 0.18;
+      filter: blur(1px) saturate(120%);
+    }
+    /* Responsive tweaks */
+    @media (max-width: 950px) {
+      .main-content {
+        margin: 1rem 1rem 1rem 0;
+        padding: 1.2rem 1rem;
+      }
+      .sidebar {
+        width: 170px;
+        padding: 1rem 0;
+      }
+      .sidebar h2 { font-size: 0.9rem;}
+      .menu button { font-size: 0.86rem; padding: 0.5rem 0.8rem;}
+    }
+    @media (max-width: 700px) {
+      body { flex-direction: column; }
+      .sidebar { width: 100vw; min-height: auto; flex-direction: row; justify-content: center; border-right: none; border-bottom: 6px double #ff70a6;}
+      .menu { flex-direction: row; gap: 0.8rem; margin-bottom: 0; }
+      .main-content { border-radius: 0 0 18px 18px; margin: 0; }
+      .main-content h1 { font-size: 1.2rem;}
+    }
+  </style>
+</head>
+<body>
+  <nav class="sidebar">
+    <h2><i class="fa-solid fa-star"></i> MENU</h2>
+    <div class="menu">
+      <button class="active" onclick="showSection('web')"><i class="fa-solid fa-laptop-code"></i> Web Projects</button>
+      <button onclick="showSection('scripts')"><i class="fa-solid fa-terminal"></i> Scripts & Automation</button>
+      <button onclick="showSection('learning')"><i class="fa-solid fa-brain"></i> Learning & Experiments</button>
+      <button onclick="showSection('other')"><i class="fa-solid fa-cube"></i> Other Projects</button>
+    </div>
+    <i class="fa-solid fa-music"></i>
+  </nav>
+  <main class="main-content">
+    <!-- Vaporwave SVG BG -->
+    <svg class="vaporwave-bg" viewBox="0 0 600 260" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <radialGradient id="sun" cx="300" cy="90" r="60" gradientUnits="userSpaceOnUse">
+        <stop stop-color="#ff70a6" />
+        <stop offset="1" stop-color="#ffb6c1" />
+      </radialGradient>
+      <circle cx="300" cy="90" r="60" fill="url(#sun)" opacity="0.35"/>
+      <rect x="0" y="210" width="600" height="50" fill="#b7eaff" opacity="0.18"/>
+      <g opacity="0.15">
+        <path d="M0 230 L600 230" stroke="#6c5ce7" stroke-width="2"/>
+        <path d="M0 250 L600 250" stroke="#6c5ce7" stroke-width="2"/>
+        <path d="M60 260 L60 210" stroke="#6c5ce7" stroke-width="2"/>
+        <path d="M180 260 L180 210" stroke="#6c5ce7" stroke-width="2"/>
+        <path d="M300 260 L300 210" stroke="#6c5ce7" stroke-width="2"/>
+        <path d="M420 260 L420 210" stroke="#6c5ce7" stroke-width="2"/>
+        <path d="M540 260 L540 210" stroke="#6c5ce7" stroke-width="2"/>
+      </g>
+      <g opacity="0.28">
+        <ellipse cx="70" cy="210" rx="20" ry="11" fill="#6c5ce7"/>
+        <rect x="67" y="180" width="6" height="30" fill="#6c5ce7"/>
+        <path d="M70 180 Q62 172 56 185" stroke="#6c5ce7" stroke-width="4" fill="none"/>
+        <path d="M70 180 Q78 172 84 185" stroke="#6c5ce7" stroke-width="4" fill="none"/>
+        <path d="M70 180 Q70 169 70 158" stroke="#6c5ce7" stroke-width="4" fill="none"/>
+      </g>
+    </svg>
+    <h1>My Personal Projects</h1>
+
+    <section id="web" class="section-content active">
+      <ul class="project-list">
+        <li><i class="fa-brands fa-youtube"></i> <a href="showcase-youtube-video.html">YouTube Video Showcase</a></li>
+        <li><i class="fa-solid fa-user-astronaut"></i> <a href="#">Personal Portfolio Site</a></li>
+      </ul>
+      <div class="placeholder">More web projects coming soon...</div>
+    </section>
+    <section id="scripts" class="section-content">
+      <ul class="project-list">
+        <li><i class="fa-solid fa-cloud-arrow-down"></i> <a href="#">Daily Backup Script</a></li>
+        <li><i class="fa-solid fa-folder-open"></i> <a href="#">Image Organizer</a></li>
+      </ul>
+      <div class="placeholder">Placeholder for future automation projects.</div>
+    </section>
+    <section id="learning" class="section-content">
+      <ul class="project-list">
+        <li><i class="fa-solid fa-robot"></i> <a href="#">Machine Learning Playground</a></li>
+        <li><i class="fa-solid fa-border-all"></i> <a href="#">CSS Grid Demo</a></li>
+      </ul>
+      <div class="placeholder">Try new ideas here!</div>
+    </section>
+    <section id="other" class="section-content">
+      <ul class="project-list">
+        <li><i class="fa-solid fa-temperature-low"></i> <a href="#">Arduino Weather Station</a></li>
+        <li><i class="fa-solid fa-image"></i> <a href="#">Raspberry Pi Photo Frame</a></li>
+      </ul>
+      <div class="placeholder">Miscellaneous cool stuff.</div>
+    </section>
+  </main>
+  <script>
+    function showSection(section) {
+      // Deactivate all buttons
+      document.querySelectorAll('.menu button').forEach(btn => btn.classList.remove('active'));
+      // Activate the clicked button
+      const btnIndex = {web:0, scripts:1, learning:2, other:3}[section];
+      document.querySelectorAll('.menu button')[btnIndex].classList.add('active');
+      // Hide all sections
+      document.querySelectorAll('.section-content').forEach(sec => sec.classList.remove('active'));
+      // Show the selected section
+      document.getElementById(section).classList.add('active');
+    }
+  </script>
+</body>
+</html>
