@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Salve, Viator!</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- LED font for the sign -->
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+  <!-- Ancient/Carved font for Sumerian effect -->
+  <link href="https://fonts.googleapis.com/css2?family=UnifrakturCook:wght@700&family=MedievalSharp&display=swap" rel="stylesheet">
+  <style>
+    html, body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      background: #222;
+      color: #444;
+      font-family: Arial, sans-serif;
+      min-height: 100vh;
+      width: 100vw;
+      overflow-x: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .columns-container {
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      width: 100vw;
+      gap: 1vw;
+      min-height: 100vh;
+      padding: 0;
+    }
+    .column {
+      width: 52px;
+      min-width: 52px;
+      height: 620px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      margin-top: 3vh;
+    }
+    @media (max-width: 900px) {
+      .column { display: none; }
+      .columns-container { gap: 0; }
+      .tablet-bg { margin: 10vw auto; }
+    }
+    /* Roman column SVG styling */
+    .column svg {
+      display: block;
+      width: 52px;
+      height: 620px;
+      min-width: 52px;
+      min-height: 620px;
+    }
+    /* Stone tablet with texture and cracks */
+    .tablet-bg {
+      position: relative;
+      width: 96vw;
+      max-width: 620px;
+      min-height: 80vh;
+      margin: 2vw auto;
+      padding: 3rem 2rem 3rem 2rem;
+      background: 
+        linear-gradient(180deg, #B3A389 0%, #857464 60%, #D1C4B0 100%),
+        url('https://www.transparenttextures.com/patterns/stone-wall.png');
+      background-blend-mode: multiply;
+      border-radius: 45px 45px 38px 38px/60px 60px 40px 40px;
+      box-shadow: 
+        0 2px 32px 4px #000a,
+        0 0 0 8px #b3a389,
+        inset 0 1px 40px 0 #85746488;
+      border: 8px double #C4B08F;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      position: relative;
+      overflow: hidden;
+    }
+    /* Extra stone texture overlay */
+    .tablet-texture {
+      pointer-events: none;
+      position: absolute;
+      z-index: 0;
+      left: 0; top: 0; width: 100%; height: 100%;
+      opacity: 0.45;
+      mix-blend-mode: multiply;
+      background: url('https://www.transparenttextures.com/patterns/rocky-wall.png') repeat;
+    }
+    .tablet-cracks {
+      position: absolute;
+      left: 0; top: 0;
+      width: 100%; height: 100%;
+      pointer-events: none;
+      z-index: 1;
+    }
+    /* Carved text effect - darker */
+    .carved-text {
+      font-family: 'MedievalSharp', 'UnifrakturCook', serif;
+      color: #453a2a;
+      font-size: 2.1rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-align: center;
+      margin-bottom: 1.4rem;
+      text-shadow:
+        1px 1px 0 #857464,
+        1px 2px 2px #0008,
+        0 2px 8px #85746488,
+        0 -1px 0 #6e5c3a,
+        0 0 5px #584a3199;
+      filter: brightness(0.83) contrast(1.1);
+      z-index: 2;
+      position: relative;
+    }
+    .carved-subtitle {
+      font-family: 'MedievalSharp', 'UnifrakturCook', serif;
+      color: #4c3c26;
+      font-size: 1.22rem;
+      margin-bottom: 2.4rem;
+      letter-spacing: 0.03em;
+      text-align: center;
+      text-shadow:
+        1px 1px 0 #85746455,
+        1px 2px 2px #0005,
+        0 2px 8px #85746444,
+        0 -1px 0 #6e5c3a88,
+        0 0 3px #584a3144;
+      filter: brightness(0.85) contrast(1.08);
+      z-index: 2;
+      position: relative;
+    }
+    /* Dull LED Marquee box */
+    .led-marquee-box {
+      margin: 2.2rem auto 0 auto;
+      width: 98%;
+      max-width: 530px;
+      height: 2.7em;
+      background: #191919;
+      border: 2px solid #444;
+      border-radius: 14px;
+      overflow: hidden;
+      box-shadow: 0 0 2px 0 #444;
+      display: flex;
+      align-items: center;
+      position: relative;
+      z-index: 2;
+    }
+    .led-marquee-text {
+      white-space: nowrap;
+      font-family: 'Press Start 2P', monospace;
+      font-size: 1em;
+      color: #ff003c;
+      letter-spacing: 0.13em;
+      text-shadow:
+        0 0 6px #ff003c,
+        0 0 2px #fff,
+        0 0 4px #ff003c;
+      padding-left: 100%;
+      animation: ledmarquee 40s linear infinite;
+      filter: brightness(1.3) saturate(1.1);
+      z-index: 2;
+      position: relative;
+    }
+    @keyframes ledmarquee {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-100%); }
+    }
+    .tablet-btn {
+      font-family: 'MedievalSharp', 'UnifrakturCook', serif;
+      font-size: 1.12rem;
+      color: #453a2a;
+      background: #857464;
+      border: 2px solid #6e5c3a;
+      padding: 0.85rem 2.1rem;
+      border-radius: 12px;
+      box-shadow: 0 2px 12px #6e5c3a22, 0 0 0 #b3a389;
+      cursor: pointer;
+      margin-top: 2.5rem;
+      outline: none;
+      transition: background 0.13s, color 0.13s, box-shadow 0.13s;
+      text-shadow: 1px 1px 0 #857464, 0 0 7px #6e5c3a44;
+      letter-spacing: 0.06em;
+      filter: brightness(0.89);
+      z-index: 2;
+      position: relative;
+    }
+    .tablet-btn:hover {
+      background: #453a2a;
+      color: #857464;
+      border-color: #857464;
+      box-shadow: 0 0 18px #85746433;
+    }
+    .tablet-btn:active {
+      background: #2c2217;
+      color: #fff;
+      box-shadow: none;
+    }
+    /* Responsive tablet */
+    @media (max-width: 700px) {
+      .tablet-bg { padding: 2rem 0.5rem; min-height: 95vh; }
+      .carved-text { font-size: 1.2rem;}
+      .carved-subtitle { font-size: 1rem;}
+      .tablet-btn { font-size: 0.89rem; padding: 0.7rem 1.2rem;}
+      .led-marquee-box { font-size: 0.8em; }
+    }
+  </style>
+</head>
+<body>
+  <div class="columns-container">
+    <div class="column">
+      <!-- Roman column SVG - left -->
+      <svg viewBox="0 0 52 620">
+        <!-- Capital -->
+        <rect x="0" y="0" width="52" height="28" rx="10" fill="#CDC0B0" stroke="#8C8171" stroke-width="3"/>
+        <!-- Shaft texture -->
+        <rect x="10" y="28" width="32" height="540" rx="13" fill="#B6A78C" stroke="#8C8171" stroke-width="5"/>
+        <rect x="10" y="28" width="32" height="540" rx="13" fill="url(#columnStone)" opacity="0.32"/>
+        <defs>
+          <pattern id="columnStone" width="12" height="12" patternUnits="userSpaceOnUse">
+            <rect x="0" y="0" width="12" height="12" fill="#B6A78C"/>
+            <circle cx="6" cy="6" r="2.5" fill="#a89c87" opacity="0.18"/>
+            <circle cx="2" cy="10" r="1.3" fill="#a89c87" opacity="0.13"/>
+          </pattern>
+        </defs>
+        <!-- Base -->
+        <rect x="0" y="568" width="52" height="28" rx="10" fill="#CDC0B0" stroke="#8C8171" stroke-width="3"/>
+      </svg>
+    </div>
+    <div class="tablet-bg">
+      <div class="tablet-texture"></div>
+      <!-- Stone cracks SVG for flavor -->
+      <svg class="tablet-cracks" viewBox="0 0 620 1000" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M80,200 Q90,220 130,250 T200,310 Q210,320 220,350" stroke="#857464" stroke-width="3" opacity="0.23"/>
+        <path d="M520,150 Q505,180 480,200 Q470,210 450,230 T420,260" stroke="#857464" stroke-width="3" opacity="0.16"/>
+        <path d="M310,950 Q320,930 330,900 Q340,880 360,870 Q370,860 380,850" stroke="#857464" stroke-width="2" opacity="0.12"/>
+        <path d="M50,800 Q80,820 120,870 Q130,880 140,900" stroke="#857464" stroke-width="3" opacity="0.14"/>
+      </svg>
+      <h1 class="carved-text">Salve, Viator!</h1>
+      <div class="carved-subtitle">
+        Intra hanc paginam ut videre mirabilia proiectorum meorum.<br>
+        Quaedam opera franguntur, quaedam operantur, omnia autem plena sunt coloris et confusionis.<br>
+        Preme signum inferius ut iter pergas!
+      </div>
+      <div class="led-marquee-box">
+        <div class="led-marquee-text">
+          &#x1F525; WELCOME TO THE WONKY ZONE! &#x1F525; Here you can find my personal projects, scripts, web wonders, and experiments. Sometimes things break, sometimes they work. Sometimes they are totally useless, but always maximal and vaporwave! &#x1F4A5; Enjoy this digital chaos and click the button below to continue your journey! &#x1F525;
+        </div>
+      </div>
+      <button class="tablet-btn" onclick="window.location.href='index.html'">
+        Ingredere Paginae Principalis
+      </button>
+    </div>
+    <div class="column">
+      <!-- Roman column SVG - right -->
+      <svg viewBox="0 0 52 620">
+        <rect x="0" y="0" width="52" height="28" rx="10" fill="#CDC0B0" stroke="#8C8171" stroke-width="3"/>
+        <rect x="10" y="28" width="32" height="540" rx="13" fill="#B6A78C" stroke="#8C8171" stroke-width="5"/>
+        <rect x="10" y="28" width="32" height="540" rx="13" fill="url(#columnStone)" opacity="0.32"/>
+        <defs>
+          <pattern id="columnStone" width="12" height="12" patternUnits="userSpaceOnUse">
+            <rect x="0" y="0" width="12" height="12" fill="#B6A78C"/>
+            <circle cx="6" cy="6" r="2.5" fill="#a89c87" opacity="0.18"/>
+            <circle cx="2" cy="10" r="1.3" fill="#a89c87" opacity="0.13"/>
+          </pattern>
+        </defs>
+        <rect x="0" y="568" width="52" height="28" rx="10" fill="#CDC0B0" stroke="#8C8171" stroke-width="3"/>
+      </svg>
+    </div>
+  </div>
+</body>
+</html>
