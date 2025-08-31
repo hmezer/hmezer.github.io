@@ -2,16 +2,23 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Main Webpage with PDF Showcase</title>
+  <title>Main Webpage with PDF and Video Showcase</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     body { margin: 0; font-family: Arial, sans-serif; }
     .container { display: flex; height: 100vh; }
-    .sidebar { width: 220px; background: #2c3e50; color: #fff; padding-top: 20px; box-sizing: border-box; min-width: 180px; }
+    .sidebar {
+      width: 220px;
+      background: #2c3e50;
+      color: #fff;
+      padding-top: 20px;
+      box-sizing: border-box;
+      min-width: 180px;
+    }
     .sidebar ul { list-style: none; padding: 0; }
     .sidebar li { padding: 15px 20px; cursor: pointer; transition: background 0.2s; }
     .sidebar li:hover, .sidebar li.active { background: #34495e; }
-    .pdf-list-panel {
+    .panel {
       width: 200px;
       background: #ecf0f1;
       border-right: 1px solid #ccc;
@@ -21,15 +28,69 @@
       box-sizing: border-box;
       min-width: 120px;
     }
-    .pdf-list-panel ul { list-style: none; padding: 0; margin: 0; }
-    .pdf-list-panel li { padding: 12px 16px; cursor: pointer; border-bottom: 1px solid #ddd; }
-    .pdf-list-panel li:hover, .pdf-list-panel li.active { background: #d0d7de; }
+    .panel ul { list-style: none; padding: 0; margin: 0; }
+    .panel li { padding: 12px 16px; cursor: pointer; border-bottom: 1px solid #ddd; }
+    .panel li:hover, .panel li.active { background: #d0d7de; }
     .main-content { flex: 1; padding: 40px 30px; background: #f8f9fa; overflow-y: auto; min-width: 0; }
     .pdf-viewer { width: 100%; height: 80vh; border: none; }
+    .tv-frame-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 80vh;
+    }
+    .tv-frame {
+      background: #222;
+      border: 10px solid #444;
+      border-radius: 30px 30px 60px 60px;
+      width: 560px;
+      height: 400px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+      position: relative;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .tv-screen {
+      width: 480px;
+      height: 320px;
+      background: #000;
+      border-radius: 18px;
+      overflow: hidden;
+      position: absolute;
+      top: 30px;
+      left: 40px;
+      z-index: 2;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.7) inset;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .tv-knobs {
+      position: absolute;
+      bottom: 18px;
+      left: 40px;
+      width: 60px;
+      height: 40px;
+      display: flex;
+      gap: 24px;
+      z-index: 3;
+    }
+    .tv-knob {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: #888;
+      border: 2px solid #444;
+      box-shadow: 0 1px 3px #222 inset;
+    }
     @media(max-width: 900px) {
       .container { flex-direction: column; }
-      .sidebar, .pdf-list-panel { width: 100%; min-width: unset; }
+      .sidebar, .panel { width: 100%; min-width: unset; }
       .pdf-viewer { height: 50vh; }
+      .tv-frame-container { height: 50vh; }
+      .tv-frame { width: 98vw; min-width: 240px; height: 240px; }
+      .tv-screen { width: 80vw; height: 140px; top: 18px; left: 10vw; }
     }
   </style>
 </head>
@@ -42,10 +103,14 @@
         <li onclick="showContent('services')">Services</li>
         <li onclick="showContent('contact')">Contact</li>
         <li onclick="showPdfSection()">PDF Showcase</li>
+        <li onclick="showVideoSection()">Video Showcase</li>
       </ul>
     </nav>
-    <div class="pdf-list-panel" id="pdf-list-panel">
+    <div class="panel" id="pdf-list-panel">
       <ul id="pdf-files-list"></ul>
+    </div>
+    <div class="panel" id="video-list-panel">
+      <ul id="video-list"></ul>
     </div>
     <div class="main-content" id="main-content">
       <h1>Welcome to Our Website</h1>
@@ -58,6 +123,22 @@
       { name: "Sample PDF 1", url: "pdfs/sample1.pdf" },
       { name: "Sample PDF 2", url: "pdfs/sample2.pdf" },
       { name: "Sample PDF 3", url: "pdfs/sample3.pdf" }
+    ];
+
+    // Video data: you can use YouTube embeds, MP4 links, etc.
+    const videoFiles = [
+      {
+        name: "Old TV Commercial",
+        embed: `<iframe width="100%" height="100%" src="https://www.youtube.com/embed/tgbNymZ7vqY?si=TV1" title="YouTube video" frameborder="0" allowfullscreen></iframe>`
+      },
+      {
+        name: "Funny Cat Video",
+        embed: `<iframe width="100%" height="100%" src="https://www.youtube.com/embed/J---aiyznGQ?si=TV2" title="YouTube video" frameborder="0" allowfullscreen></iframe>`
+      },
+      {
+        name: "Sample MP4 Video",
+        embed: `<video width="100%" height="100%" controls><source src="videos/sample.mp4" type="video/mp4">Your browser does not support the video tag.</video>`
+      }
     ];
 
     // HTML content for regular sections
@@ -78,11 +159,16 @@
         <p>Phone: +1 123 456 7890</p>`
     };
 
+    function hidePanels() {
+      document.getElementById('pdf-list-panel').style.display = 'none';
+      document.getElementById('video-list-panel').style.display = 'none';
+    }
+
     function showContent(section) {
       document.getElementById('main-content').innerHTML = contentMap[section];
       document.querySelectorAll('.sidebar li').forEach(li => li.classList.remove('active'));
       document.querySelector(`.sidebar li[onclick="showContent('${section}')"]`).classList.add('active');
-      document.getElementById('pdf-list-panel').style.display = 'none';
+      hidePanels();
     }
 
     function showPdfSection() {
@@ -90,8 +176,8 @@
         <p>Select a PDF file from the list to view it.</p>`;
       document.querySelectorAll('.sidebar li').forEach(li => li.classList.remove('active'));
       document.querySelector(`.sidebar li[onclick="showPdfSection()"]`).classList.add('active');
-      const panel = document.getElementById('pdf-list-panel');
-      panel.style.display = 'flex';
+      hidePanels();
+      document.getElementById('pdf-list-panel').style.display = 'flex';
       renderPdfList();
     }
 
@@ -104,19 +190,57 @@
         li.onclick = () => loadPdf(pdf, idx);
         pdfList.appendChild(li);
       });
-      // Remove active from all
       document.querySelectorAll('.pdf-list-panel li').forEach(li => li.classList.remove('active'));
     }
 
     function loadPdf(pdf, idx) {
-      // Highlight active pdf
       document.querySelectorAll('.pdf-list-panel li').forEach(li => li.classList.remove('active'));
       document.querySelectorAll('.pdf-list-panel li')[idx].classList.add('active');
-      // PDF embed (native browser support or fallback to direct link)
       document.getElementById('main-content').innerHTML = `
         <h2>${pdf.name}</h2>
         <iframe class="pdf-viewer" src="${pdf.url}" type="application/pdf"></iframe>
         <p><a href="${pdf.url}" target="_blank" rel="noopener">Download PDF</a></p>
+      `;
+    }
+
+    function showVideoSection() {
+      document.getElementById('main-content').innerHTML = `<h1>Video Showcase</h1>
+        <p>Select a video from the list to watch it in our retro TV!</p>`;
+      document.querySelectorAll('.sidebar li').forEach(li => li.classList.remove('active'));
+      document.querySelector(`.sidebar li[onclick="showVideoSection()"]`).classList.add('active');
+      hidePanels();
+      document.getElementById('video-list-panel').style.display = 'flex';
+      renderVideoList();
+    }
+
+    function renderVideoList() {
+      const videoList = document.getElementById('video-list');
+      videoList.innerHTML = '';
+      videoFiles.forEach((video, idx) => {
+        const li = document.createElement('li');
+        li.textContent = video.name;
+        li.onclick = () => loadVideo(video, idx);
+        videoList.appendChild(li);
+      });
+      document.querySelectorAll('.video-list-panel li').forEach(li => li.classList.remove('active'));
+    }
+
+    function loadVideo(video, idx) {
+      document.querySelectorAll('.video-list-panel li').forEach(li => li.classList.remove('active'));
+      document.querySelectorAll('.video-list-panel li')[idx].classList.add('active');
+      document.getElementById('main-content').innerHTML = `
+        <h2>${video.name}</h2>
+        <div class="tv-frame-container">
+          <div class="tv-frame">
+            <div class="tv-screen">
+              ${video.embed}
+            </div>
+            <div class="tv-knobs">
+              <div class="tv-knob"></div>
+              <div class="tv-knob"></div>
+            </div>
+          </div>
+        </div>
       `;
     }
 
