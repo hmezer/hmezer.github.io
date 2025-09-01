@@ -93,6 +93,17 @@
         height: auto;
       }
     }
+    /* Style for extra video content/passage */
+    .video-extra-content {
+      margin: 32px auto 0 auto;
+      padding: 24px;
+      background: #fffbe8;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      max-width: 850px;
+      line-height: 1.7;
+      color: #262315;
+    }
   </style>
 </head>
 <body>
@@ -126,21 +137,40 @@
       { name: "Sample PDF 3", url: "pdfs/sample3.pdf" }
     ];
 
-    // Video data (YouTube or MP4)
+    // Video data (YouTube or MP4), now with unique IDs
     const videoFiles = [
       {
+        id: "old-tv-commercial",
         name: "Old TV Commercial",
         embed: `<iframe width="100%" height="100%" src="https://www.youtube.com/embed/59oIyGsPCT8?si=ryKwxBnnqDZo4kSw" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>`
       },
       {
-        name: "Funny Cat Video",
-        embed: `<iframe width="100%" height="100%" src="https://www.youtube.com/embed/J---aiyznGQ" title="YouTube video" frameborder="0" allowfullscreen></iframe>`
+        id: "dr-moreau",
+        name: "The most profound passage from The Island of Dr. Moreau by H. G. Wells",
+        embed: `<iframe width="560" height="315" src="https://www.youtube.com/embed/bAg6YJ0LT5Y?si=Z-LNAPqIxLjVRpu4" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>`
       },
       {
+        id: "sample-mp4-video",
         name: "Sample MP4 Video",
         embed: `<video width="100%" height="100%" controls><source src="videos/sample.mp4" type="video/mp4"></video>`
       }
     ];
+
+    // Extra content for videos, keyed by video ID
+    const videoExtraContent = {
+      "dr-moreau": `
+        <div class="video-extra-content">
+          <strong>Chapter XIV, “Dr. Moreau Explains,”</strong> is the black heart of Wells’s novel, the chamber where terror sheds its mask and becomes philosophy. Up until this point, both Prendick and the reader stumble like blind guests in a nightmare carnival—grotesque shapes lurching in the torchlight, screams tearing the jungle air, yet no clue of the dark geometry behind it.<br><br>
+          Here, at last, Moreau speaks. Not as a sadistic butcher, but as a priest of science, cold and fervent, intoxicated by the very malleability (<em>Formbarkeit</em>) of life. For him, the cries of agony are mere static, the shiver of nerves—“trivial,” he calls it—while he sculpts flesh as though it were wax beneath his scalpel. His creed is not cruelty, but the ruthless curiosity of Prometheus dissecting creation itself.<br><br>
+          The chapter detonates the novel’s deepest themes like thunderclaps:<br><br>
+          <strong>The Ethics of Science:</strong> the razor’s edge between discovery and desecration—can ambition sanctify cruelty?<br>
+          <strong>The Nature of Humanity:</strong> Moreau’s Beast Folk erode the border between man and animal, showing “civilization” itself as a fragile costume, stitched from instinct and habit.<br>
+          <strong>The Problem of Pain:</strong> by declaring suffering a mere biological whisper, Moreau strips morality of its altar, leaving us face to face with the abyss of scientific nihilism.<br><br>
+          This moment transforms the tale from jungle-horror to philosophical furnace, compelling us to reckon with questions as old as Genesis and as raw as the scalpel: what is man, what is beast, and what boundaries dare science dissolve?
+        </div>
+      `
+      // Add other video passages here if needed, keyed by their IDs
+    };
 
     const contentMap = {
       home: `<h1>Welcome to Our Website</h1>
@@ -237,15 +267,17 @@
       videoFiles.forEach((video, idx) => {
         const li = document.createElement('li');
         li.textContent = video.name;
-        li.onclick = () => loadVideo(video, idx);
+        li.onclick = () => loadVideo(video);
         videoList.appendChild(li);
       });
       document.querySelectorAll('#video-files-list li').forEach(li => li.classList.remove('active'));
     }
 
-    function loadVideo(video, idx) {
+    function loadVideo(video) {
+      const idx = videoFiles.findIndex(v => v.id === video.id);
       document.querySelectorAll('#video-files-list li').forEach(li => li.classList.remove('active'));
       document.querySelectorAll('#video-files-list li')[idx].classList.add('active');
+      const extraText = videoExtraContent[video.id] || '';
       document.getElementById('main-content').innerHTML = `
         <h2>${video.name}</h2>
         <div class="tv-frame-container">
@@ -258,6 +290,7 @@
                  alt="Retro TV Frame Overlay" />
           </div>
         </div>
+        ${extraText}
       `;
       hidePanels();
       document.getElementById('video-list-panel').style.display = 'block';
