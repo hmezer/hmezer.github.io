@@ -1,9 +1,9 @@
 # hmezer.github.io
 
-Welcome to my personal website, hosted with **GitHub Pages**!
+Welcome to my personal website, hosted with **GitHub Pages**!  
 This site is a showcase of my personal projects, all built using **plain HTML, CSS, and JavaScript**—no frameworks or libraries.
 
-[***Click here to go to the website.***](https://hmezer.github.io)
+### [***Click here to go to the website.***](https://hmezer.github.io)
 
 ## About
 
