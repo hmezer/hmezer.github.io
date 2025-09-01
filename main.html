@@ -122,8 +122,8 @@
         <li id="nav-about">About</li>
         <li id="nav-services">Services</li>
         <li id="nav-contact">Contact</li>
-        <li id="nav-pdf">PDF Showcase</li>
-        <li id="nav-video">Video Showcase</li>
+        <li id="nav-pdf">Library</li>
+        <li id="nav-video">Television</li>
       </ul>
     </nav>
     <div class="panel" id="pdf-list-panel">
@@ -233,8 +233,8 @@
     }
 
     function showPdfSection() {
-      document.getElementById('main-content').innerHTML = `<h1>PDF Showcase</h1>
-        <p>Select a PDF file from the list to view it.</p>`;
+      document.getElementById('main-content').innerHTML = `<h1>Library</h1>
+        <p>Select a publishing from the list to view it.</p>`;
       hidePanels();
       document.getElementById('pdf-list-panel').style.display = 'block';
       renderPdfList();
@@ -266,7 +266,7 @@
 
     function showVideoSection() {
       document.getElementById('main-content').innerHTML = `
-        <h1>Video Showcase</h1>
+        <h1>Welcome to the Television!</h1>
         <p>Select a video from the list to watch it in our retro TV!</p>
         <div class="tv-frame-container">
           <div class="tv-frame-image">
