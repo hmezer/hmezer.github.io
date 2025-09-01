@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>H. M. Ezer welcomes you to his inn! - hmezer.github.io</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      margin: 0;
+      font-family: "Courier New", Courier, monospace;
+      color: #eee;
+    }
+    .container { display: flex; height: 100vh; min-height: 400px; }
+    .sidebar {
+      width: 220px;
+      background: #423013;
+      color: #eee;
+      padding-top: 20px;
+      box-sizing: border-box;
+      min-width: 180px;
+      flex-shrink: 0;
+    }
+    .sidebar ul { list-style: none; padding: 0; margin: 0; }
+    .sidebar li { padding: 15px 20px; cursor: pointer; transition: background 0.2s; }
+    .sidebar li:hover, .sidebar li.active { background: #42392c; }
+    /* Sliding panel animation styles */
+    .panel {
+      width: 200px;
+      background: #6d5632;
+      border-right: 1px solid #ccc;
+      padding-top: 20px;
+      box-sizing: border-box;
+      min-width: 120px;
+      flex-shrink: 0;
+      /* Animation: initially hidden and translated left */
+      transition: transform 0.45s cubic-bezier(0.5,0.01,0,1), opacity 0.35s cubic-bezier(0.5,0.01,0,1);
+      transform: translateX(-100%);
+      opacity: 0;
+      pointer-events: none;
+      display: block; /* always block for animation */
+      position: relative;
+      z-index: 10;
+    }
+    .panel.slide-in {
+      transform: translateX(0);
+      opacity: 1;
+      pointer-events: auto;
+    }
+    /* Hide if not sliding in */
+    .panel:not(.slide-in) {
+      /* visually hidden, but display block for transition */
+      pointer-events: none;
+      opacity: 0;
+    }
+    .panel ul { list-style: none; padding: 0; margin: 0; }
+    .panel li { padding: 12px 16px; cursor: pointer; border-bottom: 1px solid #ddd; }
+    .panel li:hover, .panel li.active { background: #6d4608; }
+    .main-content { 
+      flex: 1; 
+      padding: 40px 30px; 
+      background: #f8f9fa; 
+      overflow-y: auto; 
+      min-width: 0;
+      background-repeat: no-repeat;
+      background-size: cover;
+      background-position: center;
+      transition: background-image 0.5s ease;
+    }
+    .pdf-viewer { width: 100%; min-height: 400px; height: 70vh; border: none; background: #fff; }
+    .tv-frame-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 70vh;
+    }
+    .tv-frame-image {
+      position: relative;
+      display: inline-block;
+      background: transparent;
+      /* The image will set the size */
+    }
+    .tv-frame-overlay {
+      display: block;
+      position: relative;
+      width: 100%;
+      height: auto;
+      max-width: 100%;
+      max-height: 70vh;
+      z-index: 2;
+      pointer-events: none;
+    }
+    /* Stretch video box all the way to the right, with left and right margins */
+    .tv-screen-embed,
+    .tv-screen-white-noise {
+      position: absolute;
+      top: 9.8%;
+      left: 4.8%;
+      right: 20%;
+      bottom: 12%;
+      width: auto;
+      height: auto;
+      background: #000;
+      border-radius: 18px;
+      overflow: hidden;
+      box-shadow: 0 4px 18px rgba(0,0,0,0.7) inset;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 1;
+    }
+    .tv-screen-white-noise img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    @media(max-width: 900px) {
+      .container { flex-direction: column; }
+      .sidebar, .panel { width: 100%; min-width: unset; }
+      .pdf-viewer { height: 40vh; min-height: 180px; }
+      .tv-frame-container { height: 40vh; }
+      .tv-frame-image { min-width: unset; }
+      .tv-frame-overlay {
+        max-width: 98vw;
+        max-height: 40vh;
+      }
+      .tv-screen-embed,
+      .tv-screen-white-noise {
+        left: 6vw;
+        right: 12vw; /* right margin larger than left */
+        top: 16px;
+        bottom: 16px;
+        width: auto;
+        height: auto;
+      }
+      /* Mobile: slide vertical (top) */
+      .panel {
+        transform: translateY(-100%);
+        transition: transform 0.45s cubic-bezier(0.5,0.01,0,1), opacity 0.35s cubic-bezier(0.5,0.01,0,1);
+      }
+      .panel.slide-in {
+        transform: translateY(0);
+      }
+    }
+    /* Style for extra video content/passage */
+    .video-extra-content {
+      margin: 32px auto 0 auto;
+      padding: 24px;
+      background: #fffbe8;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      max-width: 850px;
+      line-height: 1.7;
+      color: #262315;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <nav class="sidebar">
+      <ul>
+        <li id="nav-home" class="active">Home</li>
+        <li id="nav-about">About</li>
+        <li id="nav-pdf">Library</li>
+        <li id="nav-video">Television</li>
+      </ul>
+    </nav>
+    <div class="panel" id="pdf-list-panel">
+      <ul id="pdf-files-list"></ul>
+    </div>
+    <div class="panel" id="video-list-panel">
+      <ul id="video-files-list"></ul>
+    </div>
+    <div class="main-content" id="main-content">
+      <h1>Welcome to Our Website</h1>
+      <p>This is the home page. Select an item on the left to see more content.</p>
+    </div>
+  </div>
+  <script>
+    // PDF files data
+    const pdfFiles = [
+      { name: "Arab Revolt of 1916", url: "publishings/path-to-arab-revolt.pdf" }
+    ];
+
+    // Video data (YouTube or MP4), now with unique IDs
+    const videoFiles = [
+      {
+        id: "stalkers-lament",
+        name: "Stalker's Lament [video essay]",
+        embed: `<iframe width="100%" height="100%" src="https://www.youtube.com/embed/59oIyGsPCT8?si=ryKwxBnnqDZo4kSw" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>`
+      },
+      {
+        id: "dr-moreau",
+        name: "The most profound passage from The Island of Dr. Moreau [audiobook]",
+        embed: `<iframe width="100%" height="100%" src="https://www.youtube.com/embed/bAg6YJ0LT5Y?si=Z-LNAPqIxLjVRpu4" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>`
+      }
+    ];
+
+    // Extra content for videos, keyed by video ID
+    const videoExtraContent = {
+      "stalkers-lament": `
+        <div class="video-extra-content">
+          Stalker is less a film than a pilgrimage through mist and silence, where the so-called “Zone” becomes a mirror of the soul. The journey is not about reaching a room that grants wishes, but about confronting the landscape’s mysteries.<br><br>
+          While this work had been a topic of never ending discussions, speculations and commentaries, the thoughts I share in this video are those that have emerged from my observations. I invite you to reflect on them as you journey through the film.<br><br>
+          <em>Voiceover generated with <a href="https://github.com/hmezer/TorToiSe-TTS-RVC-Voice-Generation" target="_blank" rel="noopener">TorToiSe-RVC pipeline</a>.</em>
+        </div>
+      `,
+      "dr-moreau": `
+        <div class="video-extra-content">
+          <strong>Chapter XIV, “Dr. Moreau Explains,”</strong> is the black heart of Wells’s novel, the chamber where terror sheds its mask and becomes philosophy. Up until this point, both Prendick and the reader have been lost in speculation.<br><br>
+          Here, at last, Moreau speaks. Not as a sadistic butcher, but as a priest of science, cold and fervent, intoxicated by the very malleability of life. For him, the cries of the Beast Folk are mere obstacles to knowledge.<br><br>
+          The chapter detonates the novel’s deepest themes like thunderclaps:<br><br>
+          <strong>The Ethics of Science:</strong> the razor’s edge between discovery and desecration—can ambition sanctify cruelty?<br>
+          <strong>The Nature of Humanity:</strong> Moreau’s Beast Folk erode the border between man and animal, showing “civilization” itself as a fragile costume, stitched from instinct and habit.<br>
+          <strong>The Problem of Pain:</strong> by declaring suffering a mere biological whisper, Moreau strips morality of its altar, leaving us face to face with the abyss of scientific nihilism.<br><br>
+          This moment transforms the tale from jungle-horror to philosophical furnace, compelling us to reckon with questions as old as Genesis and as raw as the scalpel: what is man, what is beast, and what lies between?<br><br>
+          <em>Voiceover generated with <a href="https://github.com/hmezer/TorToiSe-TTS-RVC-Voice-Generation" target="_blank" rel="noopener">TorToiSe-RVC pipeline</a>.</em>
+        </div>
+      `
+      // Add other video passages here if needed, keyed by their IDs
+    };
+
+    const contentMap = {
+      home: `<h1>Welcome to My Website!</h1>
+        <p>This is the home page. Select an item on the left to see more content.</p>`,
+      about: `<h1>About Me</h1>
+        <p>I hold dual Bachelor’s degrees in Economics and International Relations from Koç University, where my love for history and philosophy also found a home. Currently, I’m pursuing a Master’s in Economic Policy at the University of Erfurt, Germany.<br>
+        <br>
+        <h1>Contact</h1>
+        <p>Email: ezerhuseyinmert@gmail.com</p>
+        <p>Phone: +49 1577 371 9794 [Deutschland]<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;+90 542 219 8199 [Türkiye]</p>`
+    };
+
+    const navMap = {
+      "nav-home": () => showContent('home'),
+      "nav-about": () => showContent('about'),
+      "nav-pdf": showPdfSection,
+      "nav-video": showVideoSection
+    };
+
+    Object.keys(navMap).forEach(id => {
+      document.getElementById(id).addEventListener("click", () => {
+        setActiveNav(id);
+        navMap[id]();
+      });
+    });
+
+    function setActiveNav(activeId) {
+      document.querySelectorAll('.sidebar li').forEach(li => li.classList.remove('active'));
+      const el = document.getElementById(activeId);
+      if (el) el.classList.add('active');
+    }
+
+    // Hide panels with animation
+    function hidePanels() {
+      ['pdf-list-panel', 'video-list-panel'].forEach(panelId => {
+        const panel = document.getElementById(panelId);
+        panel.classList.remove('slide-in');
+      });
+    }
+
+    // --- Background image logic ---
+    function setBackgroundImage(section) {
+      const mainContent = document.getElementById('main-content');
+      if (section === 'home') {
+        mainContent.style.backgroundImage = 'url("media/beach-of-pale.jpg")';
+      } else {
+        mainContent.style.backgroundImage = 'url("media/bikini-bottom-background.png")';
+      }
+    }
+
+    function showContent(section) {
+      document.getElementById('main-content').innerHTML = contentMap[section];
+      setBackgroundImage(section);
+      hidePanels();
+    }
+
+    function showPdfSection() {
+      document.getElementById('main-content').innerHTML = `<h1>Library</h1>
+        <p>Select a publishing from the list to view it.</p>`;
+      setBackgroundImage('pdf');
+      hidePanels();
+      const panel = document.getElementById('pdf-list-panel');
+      // ensure panel is visible, then animate
+      setTimeout(() => panel.classList.add('slide-in'), 10);
+      renderPdfList();
+    }
+
+    function renderPdfList() {
+      const pdfList = document.getElementById('pdf-files-list');
+      pdfList.innerHTML = '';
+      pdfFiles.forEach((pdf, idx) => {
+        const li = document.createElement('li');
+        li.textContent = pdf.name;
+        li.onclick = () => loadPdf(pdf, idx);
+        pdfList.appendChild(li);
+      });
+      document.querySelectorAll('#pdf-files-list li').forEach(li => li.classList.remove('active'));
+    }
+
+    function loadPdf(pdf, idx) {
+      document.querySelectorAll('#pdf-files-list li').forEach(li => li.classList.remove('active'));
+      document.querySelectorAll('#pdf-files-list li')[idx].classList.add('active');
+      document.getElementById('main-content').innerHTML = `
+        <h2>${pdf.name}</h2>
+        <iframe class="pdf-viewer" src="${pdf.url}" type="application/pdf"></iframe>
+        <p><a href="${pdf.url}" target="_blank" rel="noopener">Download PDF</a></p>
+      `;
+      setBackgroundImage('pdf');
+      hidePanels();
+      const panel = document.getElementById('pdf-list-panel');
+      setTimeout(() => panel.classList.add('slide-in'), 10);
+    }
+
+    function showVideoSection() {
+      document.getElementById('main-content').innerHTML = `
+        <h1>Welcome to the Television!</h1>
+        <p>Select a video from the list to watch it in our retro TV!</p>
+        <div class="tv-frame-container">
+          <div class="tv-frame-image">
+            <div class="tv-screen-white-noise">
+              <img src="media/white-noise.gif" alt="White Noise" />
+            </div>
+            <img src="media/old-television-frame-169.png"
+                 class="tv-frame-overlay"
+                 alt="Retro TV Frame Overlay" />
+          </div>
+        </div>
+      `;
+      setBackgroundImage('video');
+      hidePanels();
+      const panel = document.getElementById('video-list-panel');
+      setTimeout(() => panel.classList.add('slide-in'), 10);
+      renderVideoList();
+    }
+
+    function renderVideoList() {
+      const videoList = document.getElementById('video-files-list');
+      videoList.innerHTML = '';
+      videoFiles.forEach((video, idx) => {
+        const li = document.createElement('li');
+        li.textContent = video.name;
+        li.onclick = () => loadVideo(video);
+        videoList.appendChild(li);
+      });
+      document.querySelectorAll('#video-files-list li').forEach(li => li.classList.remove('active'));
+    }
+
+    function loadVideo(video) {
+      const idx = videoFiles.findIndex(v => v.id === video.id);
+      document.querySelectorAll('#video-files-list li').forEach(li => li.classList.remove('active'));
+      document.querySelectorAll('#video-files-list li')[idx].classList.add('active');
+      const extraText = videoExtraContent[video.id] || '';
+      document.getElementById('main-content').innerHTML = `
+        <h2>${video.name}</h2>
+        <div class="tv-frame-container">
+          <div class="tv-frame-image">
+            <div class="tv-screen-embed">
+              ${video.embed}
+            </div>
+            <img src="media/old-television-frame-169.png"
+                 class="tv-frame-overlay"
+                 alt="Retro TV Frame Overlay" />
+          </div>
+        </div>
+        ${extraText}
+      `;
+      setBackgroundImage('video');
+      hidePanels();
+      const panel = document.getElementById('video-list-panel');
+      setTimeout(() => panel.classList.add('slide-in'), 10);
+    }
+
+    // On page load, show home and set active nav
+    setActiveNav("nav-home");
+    showContent('home');
+  </script>
+</body>
+</html>
