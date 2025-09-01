@@ -32,7 +32,17 @@
     .panel ul { list-style: none; padding: 0; margin: 0; }
     .panel li { padding: 12px 16px; cursor: pointer; border-bottom: 1px solid #ddd; }
     .panel li:hover, .panel li.active { background: #d0d7de; }
-    .main-content { flex: 1; padding: 40px 30px; background: #f8f9fa; overflow-y: auto; min-width: 0; }
+    .main-content { 
+      flex: 1; 
+      padding: 40px 30px; 
+      background: #f8f9fa; 
+      overflow-y: auto; 
+      min-width: 0;
+      background-repeat: no-repeat;
+      background-size: cover;
+      background-position: center;
+      transition: background-image 0.5s ease;
+    }
     .pdf-viewer { width: 100%; min-height: 400px; height: 70vh; border: none; background: #fff; }
     .tv-frame-container {
       display: flex;
@@ -225,14 +235,26 @@
       document.getElementById('video-list-panel').style.display = 'none';
     }
 
+    // --- Background image logic ---
+    function setBackgroundImage(section) {
+      const mainContent = document.getElementById('main-content');
+      if (section === 'home') {
+        mainContent.style.backgroundImage = 'url("media/beach-of-pale.png")';
+      } else {
+        mainContent.style.backgroundImage = 'url("media/bikini-bottom-background.png")';
+      }
+    }
+
     function showContent(section) {
       document.getElementById('main-content').innerHTML = contentMap[section];
+      setBackgroundImage(section);
       hidePanels();
     }
 
     function showPdfSection() {
       document.getElementById('main-content').innerHTML = `<h1>Library</h1>
         <p>Select a publishing from the list to view it.</p>`;
+      setBackgroundImage('pdf');
       hidePanels();
       document.getElementById('pdf-list-panel').style.display = 'block';
       renderPdfList();
@@ -258,6 +280,7 @@
         <iframe class="pdf-viewer" src="${pdf.url}" type="application/pdf"></iframe>
         <p><a href="${pdf.url}" target="_blank" rel="noopener">Download PDF</a></p>
       `;
+      setBackgroundImage('pdf');
       hidePanels();
       document.getElementById('pdf-list-panel').style.display = 'block';
     }
@@ -277,6 +300,7 @@
           </div>
         </div>
       `;
+      setBackgroundImage('video');
       hidePanels();
       document.getElementById('video-list-panel').style.display = 'block';
       renderVideoList();
@@ -313,6 +337,7 @@
         </div>
         ${extraText}
       `;
+      setBackgroundImage('video');
       hidePanels();
       document.getElementById('video-list-panel').style.display = 'block';
     }
