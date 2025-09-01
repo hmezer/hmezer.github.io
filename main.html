@@ -147,26 +147,29 @@
       {
         id: "dr-moreau",
         name: "The most profound passage from The Island of Dr. Moreau",
-        embed: `<iframe width="100%" height="100%" src="https://www.youtube.com/embed/bAg6YJ0LT5Y?si=Z-LNAPqIxLjVRpu4" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>`
-      },
-      {
-        id: "sample-mp4-video",
-        name: "Sample MP4 Video",
-        embed: `<video width="100%" height="100%" controls><source src="videos/sample.mp4" type="video/mp4"></video>`
+        embed: `<iframe width="100%" height="100%" src="https://www.youtube.com/embed/bAg6YJ0LT5Y?si=Z-LNAPqIxLjVRpu4" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>`
       }
     ];
 
     // Extra content for videos, keyed by video ID
     const videoExtraContent = {
+      "stalkers-lament": `
+        <div class="video-extra-content">
+          Stalker is less a film than a pilgrimage through mist and silence, where the so-called “Zone” becomes a mirror of the soul. The journey is not about reaching a room that grants wishes, but about crossing the trembling frontier between faith, despair, and the fragile architecture of hope. Tarkovsky paints with slowness, with rain and rust, making each puddle a scripture and each silence a cathedral. The Zone does not promise answers—it reveals the abyss within the seeker.<br><br>
+          While this work had been a topic of never ending discussions, speculations and commentaries, the thoughts I share in this video are those that have emerged from my observations. I invite you to consider these speculations and elevate upon them.
+          <em>Voiceover generated with <a href="https://github.com/hmezer/TorToiSe-TTS-RVC-Voice-Generation" target="_blank" rel="noopener">TorToiSe-RVC pipeline</a>.</em>
+        </div>
+      `,
       "dr-moreau": `
         <div class="video-extra-content">
-          <strong>Chapter XIV, “Dr. Moreau Explains,”</strong> is the black heart of Wells’s novel, the chamber where terror sheds its mask and becomes philosophy. Up until this point, both Prendick and the reader stumble like blind guests in a nightmare carnival—grotesque shapes lurching in the torchlight, screams tearing the jungle air, yet no clue of the dark geometry behind it.<br><br>
-          Here, at last, Moreau speaks. Not as a sadistic butcher, but as a priest of science, cold and fervent, intoxicated by the very malleability (<em>Formbarkeit</em>) of life. For him, the cries of agony are mere static, the shiver of nerves—“trivial,” he calls it—while he sculpts flesh as though it were wax beneath his scalpel. His creed is not cruelty, but the ruthless curiosity of Prometheus dissecting creation itself.<br><br>
+          <strong>Chapter XIV, “Dr. Moreau Explains,”</strong> is the black heart of Wells’s novel, the chamber where terror sheds its mask and becomes philosophy. Up until this point, both Prendick and the reader are trapped in a labyrinth of fear—of pain, of monstrosity, of the unknown. But here, in a room thick with morphia and the stench of the vivisected, the curtain lifts.<br><br>
+          Here, at last, Moreau speaks. Not as a sadistic butcher, but as a priest of science, cold and fervent, intoxicated by the very malleability of life. For him, the cries of the Beast Folk are no more than the creaking of wood as he carves new forms from flesh—evolution under a scalpel.<br><br>
           The chapter detonates the novel’s deepest themes like thunderclaps:<br><br>
           <strong>The Ethics of Science:</strong> the razor’s edge between discovery and desecration—can ambition sanctify cruelty?<br>
           <strong>The Nature of Humanity:</strong> Moreau’s Beast Folk erode the border between man and animal, showing “civilization” itself as a fragile costume, stitched from instinct and habit.<br>
           <strong>The Problem of Pain:</strong> by declaring suffering a mere biological whisper, Moreau strips morality of its altar, leaving us face to face with the abyss of scientific nihilism.<br><br>
-          This moment transforms the tale from jungle-horror to philosophical furnace, compelling us to reckon with questions as old as Genesis and as raw as the scalpel: what is man, what is beast, and what boundaries dare science dissolve?
+          This moment transforms the tale from jungle-horror to philosophical furnace, compelling us to reckon with questions as old as Genesis and as raw as the scalpel: what is man, what is beast, and what, in the end, is the soul?
+          <em>Voiceover generated with <a href="https://github.com/hmezer/TorToiSe-TTS-RVC-Voice-Generation" target="_blank" rel="noopener">TorToiSe-RVC pipeline</a>.</em>
         </div>
       `
       // Add other video passages here if needed, keyed by their IDs
