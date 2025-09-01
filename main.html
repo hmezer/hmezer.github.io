@@ -16,7 +16,7 @@
       min-width: 180px;
       flex-shrink: 0;
     }
-    .sidebar ul { list-style: none; padding: 0; }
+    .sidebar ul { list-style: none; padding: 0; margin: 0; }
     .sidebar li { padding: 15px 20px; cursor: pointer; transition: background 0.2s; }
     .sidebar li:hover, .sidebar li.active { background: #34495e; }
     .panel {
@@ -42,11 +42,8 @@
     }
     .tv-frame-image {
       position: relative;
-      /* Remove fixed width/height, set to fit image's natural size */
       display: inline-block;
-      /* Center in parent */
       background: transparent;
-      /* No forced sizing */
     }
     /* The overlay image should be shown at its natural size */
     .tv-frame-overlay {
@@ -62,15 +59,11 @@
     /* The video box should be absolutely positioned behind the overlay, almost touching left, with equal margin top/bottom */
     .tv-screen-embed {
       position: absolute;
-      /* Use the overlay image's aspect ratio for the box positioning */
-      /* We'll use left: 18px and top/bottom: 36px for a small margin, but frame overlay must be loaded first */
       left: 18px;
       top: 36px;
       bottom: 36px;
-      /* width: overlay width - left margin - right margin (right margin decided by overlay image width minus box width) */
       width: 420px;
-      /* height: overlay height - top margin - bottom margin */
-      height: calc(100% - 72px); /* 36px top + 36px bottom */
+      height: calc(100% - 72px);
       background: #000;
       border-radius: 18px;
       overflow: hidden;
@@ -78,9 +71,8 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      z-index: 1; /* behind frame */
+      z-index: 1;
     }
-    /* Mobile adjustments */
     @media(max-width: 900px) {
       .container { flex-direction: column; }
       .sidebar, .panel { width: 100%; min-width: unset; }
@@ -91,13 +83,12 @@
         max-width: 98vw;
         max-height: 40vh;
       }
-      /* The video box needs to be sized according to available image on mobile */
       .tv-screen-embed {
         left: 6vw;
         top: 16px;
         bottom: 16px;
         width: 80vw;
-        height: calc(100% - 32px); /* 16px top/bottom */
+        height: calc(100% - 32px);
       }
     }
   </style>
@@ -106,12 +97,12 @@
   <div class="container">
     <nav class="sidebar">
       <ul>
-        <li class="active" onclick="showContent('home')">Home</li>
-        <li onclick="showContent('about')">About</li>
-        <li onclick="showContent('services')">Services</li>
-        <li onclick="showContent('contact')">Contact</li>
-        <li onclick="showPdfSection()">PDF Showcase</li>
-        <li onclick="showVideoSection()">Video Showcase</li>
+        <li id="nav-home" class="active">Home</li>
+        <li id="nav-about">About</li>
+        <li id="nav-services">Services</li>
+        <li id="nav-contact">Contact</li>
+        <li id="nav-pdf">PDF Showcase</li>
+        <li id="nav-video">Video Showcase</li>
       </ul>
     </nav>
     <div class="panel" id="pdf-list-panel">
@@ -137,7 +128,7 @@
     const videoFiles = [
       {
         name: "Old TV Commercial",
-        embed: `<iframe width="100%" height="100%" src="https://www.youtube.com/embed/59oIyGsPCT8?si=ryKwxBnnqDZo4kSw" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clip[...]
+        embed: `<iframe width="100%" height="100%" src="https://www.youtube.com/embed/59oIyGsPCT8?si=ryKwxBnnqDZo4kSw" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>`
       },
       {
         name: "Funny Cat Video",
@@ -167,6 +158,30 @@
         <p>Phone: +1 123 456 7890</p>`
     };
 
+    // Navigation IDs and their handlers
+    const navMap = {
+      "nav-home": () => showContent('home'),
+      "nav-about": () => showContent('about'),
+      "nav-services": () => showContent('services'),
+      "nav-contact": () => showContent('contact'),
+      "nav-pdf": showPdfSection,
+      "nav-video": showVideoSection
+    };
+
+    // Add event listeners to sidebar navigation
+    Object.keys(navMap).forEach(id => {
+      document.getElementById(id).addEventListener("click", () => {
+        setActiveNav(id);
+        navMap[id]();
+      });
+    });
+
+    function setActiveNav(activeId) {
+      document.querySelectorAll('.sidebar li').forEach(li => li.classList.remove('active'));
+      const el = document.getElementById(activeId);
+      if (el) el.classList.add('active');
+    }
+
     function hidePanels() {
       document.getElementById('pdf-list-panel').style.display = 'none';
       document.getElementById('video-list-panel').style.display = 'none';
@@ -174,19 +189,14 @@
 
     function showContent(section) {
       document.getElementById('main-content').innerHTML = contentMap[section];
-      document.querySelectorAll('.sidebar li').forEach(li => li.classList.remove('active'));
-      document.querySelector(`.sidebar li[onclick="showContent('${section}')"]`).classList.add('active');
       hidePanels();
     }
 
     function showPdfSection() {
       document.getElementById('main-content').innerHTML = `<h1>PDF Showcase</h1>
         <p>Select a PDF file from the list to view it.</p>`;
-      document.querySelectorAll('.sidebar li').forEach(li => li.classList.remove('active'));
-      document.querySelector(`.sidebar li[onclick="showPdfSection()"]`).classList.add('active');
       hidePanels();
       document.getElementById('pdf-list-panel').style.display = 'block';
-      document.getElementById('video-list-panel').style.display = 'none';
       renderPdfList();
     }
 
@@ -210,16 +220,15 @@
         <iframe class="pdf-viewer" src="${pdf.url}" type="application/pdf"></iframe>
         <p><a href="${pdf.url}" target="_blank" rel="noopener">Download PDF</a></p>
       `;
+      hidePanels();
+      document.getElementById('pdf-list-panel').style.display = 'block';
     }
 
     function showVideoSection() {
       document.getElementById('main-content').innerHTML = `<h1>Video Showcase</h1>
         <p>Select a video from the list to watch it in our retro TV!</p>`;
-      document.querySelectorAll('.sidebar li').forEach(li => li.classList.remove('active'));
-      document.querySelector(`.sidebar li[onclick="showVideoSection()"]`).classList.add('active');
       hidePanels();
       document.getElementById('video-list-panel').style.display = 'block';
-      document.getElementById('pdf-list-panel').style.display = 'none';
       renderVideoList();
     }
 
@@ -251,9 +260,12 @@
           </div>
         </div>
       `;
+      hidePanels();
+      document.getElementById('video-list-panel').style.display = 'block';
     }
 
-    // On page load, show home
+    // On page load, show home and set active nav
+    setActiveNav("nav-home");
     showContent('home');
   </script>
 </body>
