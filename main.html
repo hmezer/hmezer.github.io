@@ -48,11 +48,6 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      /* Example image from Wikimedia Commons, public domain */
-      background-image: url("media/retro-1960s-television-frame-with-transparent-background.jpg");
-      background-size: cover;
-      background-position: center;
-      box-shadow: 0 8px 24px rgba(0,0,0,0.5);
     }
     .tv-screen-embed {
       position: absolute;
@@ -67,7 +62,16 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      z-index: 2;
+      z-index: 1; /* behind frame */
+    }
+    .tv-frame-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 2; /* on top */
+      pointer-events: none; /* so clicks pass through */
     }
     @media(max-width: 900px) {
       .container { flex-direction: column; }
@@ -76,6 +80,7 @@
       .tv-frame-container { height: 40vh; }
       .tv-frame-image { width: 98vw; min-width: 240px; height: 200px; }
       .tv-screen-embed { width: 60vw; height: 110px; top: 36px; left: 19vw; }
+      .tv-frame-overlay { width: 98vw; height: 200px; }
     }
   </style>
 </head>
@@ -114,7 +119,7 @@
     const videoFiles = [
       {
         name: "Old TV Commercial",
-        embed: `<iframe width="100%" height="100%" src="https://www.youtube.com/embed/59oIyGsPCT8?si=ryKwxBnnqDZo4kSw" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>`
+        embed: `<iframe width="100%" height="100%" src="https://www.youtube.com/embed/59oIyGsPCT8?si=ryKwxBnnqDZo4kSw" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`
       },
       {
         name: "Funny Cat Video",
@@ -222,6 +227,9 @@
             <div class="tv-screen-embed">
               ${video.embed}
             </div>
+            <img src="media/retro-1960s-television-frame-with-transparent-background.png"
+                 class="tv-frame-overlay"
+                 alt="Retro TV Frame Overlay" />
           </div>
         </div>
       `;
