@@ -1,4 +1,3 @@
-````markdown name=README.md
 # hmezer.github.io
 
 Welcome to my personal website, hosted with **GitHub Pages**!  
