@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Spotify API Player Demo</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 2em; }
+        input, button { padding: 0.5em; margin: 0.5em 0; }
+        #player { margin-top: 1em; }
+    </style>
+</head>
+<body>
+    <h2>Spotify API Player</h2>
+    <label>
+        Enter Spotify API Key (Access Token):
+        <input type="text" id="apiKey" placeholder="Paste your Spotify API key here" style="width: 100%;">
+    </label>
+    <br>
+    <label>
+        Enter Spotify Track URL or ID:
+        <input type="text" id="trackInput" placeholder="e.g. 11dFghVXANMlKmJXsNCbNl or https://open.spotify.com/track/11dFghVXANMlKmJXsNCbNl" style="width: 100%;">
+    </label>
+    <br>
+    <button id="playBtn">Show Player</button>
+
+    <div id="player"></div>
+
+    <script>
+        document.getElementById('playBtn').onclick = function() {
+            const apiKey = document.getElementById('apiKey').value.trim();
+            const trackInput = document.getElementById('trackInput').value.trim();
+            let trackId = trackInput;
+
+            // Extract track ID from URL if needed
+            const urlMatch = trackInput.match(/track\/([a-zA-Z0-9]+)/);
+            if (urlMatch) {
+                trackId = urlMatch[1];
+            }
+
+            if (!apiKey) {
+                alert('Please enter your Spotify API key.');
+                return;
+            }
+            if (!trackId) {
+                alert('Please enter a valid Spotify track ID or URL.');
+                return;
+            }
+
+            // Optionally, use the API key to fetch track info (demonstration purposes)
+            fetch(`https://api.spotify.com/v1/tracks/${trackId}`, {
+                headers: {
+                    'Authorization': `Bearer ${apiKey}`
+                }
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.error) {
+                    document.getElementById('player').innerHTML = `<span style="color:red;">Error: ${data.error.message}</span>`;
+                } else {
+                    // Show the Spotify embed player
+                    document.getElementById('player').innerHTML = `
+                        <h3>${data.name} by ${data.artists.map(a => a.name).join(', ')}</h3>
+                        <iframe src="https://open.spotify.com/embed/track/${trackId}"
+                                width="300" height="80" frameborder="0" allowtransparency="true" allow="encrypted-media">
+                        </iframe>
+                    `;
+                }
+            })
+            .catch(err => {
+                document.getElementById('player').innerHTML = `<span style="color:red;">API error</span>`;
+            });
+        };
+    </script>
+</body>
+</html>
