@@ -32,12 +32,11 @@
       box-sizing: border-box;
       min-width: 120px;
       flex-shrink: 0;
-      /* Animation: initially hidden and translated left */
       transition: transform 0.45s cubic-bezier(0.5,0.01,0,1), opacity 0.35s cubic-bezier(0.5,0.01,0,1);
       transform: translateX(-100%);
       opacity: 0;
       pointer-events: none;
-      display: block; /* always block for animation */
+      display: block;
       position: relative;
       z-index: 10;
     }
@@ -46,9 +45,7 @@
       opacity: 1;
       pointer-events: auto;
     }
-    /* Hide if not sliding in */
     .panel:not(.slide-in) {
-      /* visually hidden, but display block for transition */
       pointer-events: none;
       opacity: 0;
     }
@@ -77,7 +74,6 @@
       position: relative;
       display: inline-block;
       background: transparent;
-      /* The image will set the size */
     }
     .tv-frame-overlay {
       display: block;
@@ -89,7 +85,6 @@
       z-index: 2;
       pointer-events: none;
     }
-    /* Stretch video box all the way to the right, with left and right margins */
     .tv-screen-embed,
     .tv-screen-white-noise {
       position: absolute;
@@ -114,35 +109,48 @@
       object-fit: cover;
       display: block;
     }
+    /* Quote Widget Styles */
+    .quote-widget {
+      margin-top: 60px;
+      padding: 24px;
+      background: #423013; /* Matches sidebar */
+      border-left: 6px solid #6d5632; /* Matches panel */
+      border-radius: 4px;
+      max-width: 700px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    }
+    .quote-text {
+      font-size: 1.2em;
+      line-height: 1.6;
+      margin-bottom: 15px;
+    }
+    .quote-author {
+      text-align: right;
+      font-size: 1.1em;
+      color: #ddd;
+    }
     @media(max-width: 900px) {
       .container { flex-direction: column; }
       .sidebar, .panel { width: 100%; min-width: unset; }
       .pdf-viewer { height: 40vh; min-height: 180px; }
       .tv-frame-container { height: 40vh; }
       .tv-frame-image { min-width: unset; }
-      .tv-frame-overlay {
-        max-width: 98vw;
-        max-height: 40vh;
-      }
+      .tv-frame-overlay { max-width: 98vw; max-height: 40vh; }
       .tv-screen-embed,
       .tv-screen-white-noise {
         left: 6vw;
-        right: 12vw; /* right margin larger than left */
+        right: 12vw;
         top: 16px;
         bottom: 16px;
         width: auto;
         height: auto;
       }
-      /* Mobile: slide vertical (top) */
       .panel {
         transform: translateY(-100%);
         transition: transform 0.45s cubic-bezier(0.5,0.01,0,1), opacity 0.35s cubic-bezier(0.5,0.01,0,1);
       }
-      .panel.slide-in {
-        transform: translateY(0);
-      }
+      .panel.slide-in { transform: translateY(0); }
     }
-    /* Style for extra video content/passage */
     .video-extra-content {
       margin: 32px auto 0 auto;
       padding: 24px;
@@ -224,12 +232,20 @@
           <em>Voiceover generated with <a href="https://github.com/hmezer/TorToiSe-TTS-RVC-Voice-Generation" target="_blank" rel="noopener">TorToiSe-RVC pipeline</a>.</em>
         </div>
       `
-      // Add other video passages here if needed, keyed by their IDs
     };
+
+    // Global variable to cache the API quote so we don't fetch it repeatedly
+    let cachedQuote = null;
 
     const contentMap = {
       home: `<h1>Welcome to My Website!</h1>
-        <p>This is the home page. Select an item on the left to see more content.</p>`,
+        <p>This is the home page. Select an item on the left to see more content.</p>
+        
+        <div class="quote-widget" id="quote-widget">
+          <div class="quote-text" id="quote-text">Consulting the archives for today's thought...</div>
+          <div class="quote-author" id="quote-author"></div>
+        </div>`,
+        
       about: `<h1>About Me</h1>
         <p>I hold dual Bachelor’s degrees in Economics and International Relations from Koç University, where my love for history and philosophy also found a home. Currently, I’m pursuing a Master’s in Economic Policy at the University of Erfurt, Germany.<br>
         <br>
@@ -259,7 +275,6 @@
       if (el) el.classList.add('active');
     }
 
-    // Hide panels with animation
     function hidePanels() {
       ['pdf-list-panel', 'video-list-panel'].forEach(panelId => {
         const panel = document.getElementById(panelId);
@@ -267,7 +282,6 @@
       });
     }
 
-    // --- Background image logic ---
     function setBackgroundImage(section) {
       const mainContent = document.getElementById('main-content');
       if (section === 'home') {
@@ -277,10 +291,50 @@
       }
     }
 
+    // --- New Fetch API Logic ---
+    function fetchQuote() {
+      // If we already have the quote stored, just display it instantly
+      if (cachedQuote) {
+        displayQuote(cachedQuote);
+        return;
+      }
+
+      // Otherwise, request it from your new Render API
+      fetch("https://github-pages-backend.onrender.com/random-quote")
+        .then(response => response.json())
+        .then(data => {
+          cachedQuote = data; // Save it for later clicks
+          displayQuote(data);
+        })
+        .catch(error => {
+          console.error("The API might be sleeping:", error);
+          const textEl = document.getElementById("quote-text");
+          if (textEl) {
+            textEl.innerHTML = "<em>(The archives are currently resting. Please try refreshing in a moment...)</em>";
+          }
+        });
+    }
+
+    function displayQuote(data) {
+      const textEl = document.getElementById("quote-text");
+      const authorEl = document.getElementById("quote-author");
+      
+      // We map data.quote to the text, and data.author to the author name!
+      if (textEl && authorEl) {
+        textEl.innerHTML = `"${data.quote}"`;
+        authorEl.innerHTML = `<i>- ${data.author}</i>`;
+      }
+    }
+
     function showContent(section) {
       document.getElementById('main-content').innerHTML = contentMap[section];
       setBackgroundImage(section);
       hidePanels();
+      
+      // If the user navigated to the Home page, trigger the API fetch!
+      if (section === 'home') {
+        fetchQuote();
+      }
     }
 
     function showPdfSection() {
@@ -289,7 +343,6 @@
       setBackgroundImage('pdf');
       hidePanels();
       const panel = document.getElementById('pdf-list-panel');
-      // ensure panel is visible, then animate
       setTimeout(() => panel.classList.add('slide-in'), 10);
       renderPdfList();
     }
