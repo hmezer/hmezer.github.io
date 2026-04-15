@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>API Test</title>
+  <style>
+    body { font-family: sans-serif; padding: 40px; line-height: 1.6; }
+    .debug-box { background: #f4f4f4; padding: 15px; border: 1px solid #ccc; margin-top: 20px; }
+  </style>
+</head>
+<body>
+
+  <h2>API Isolation Test</h2>
+  
+  <div class="debug-box">
+    <h3 id="quote-text">Fetching quote...</h3>
+    <p id="quote-author"></p>
+  </div>
+
+  <p><em>Note: If this stays stuck on "Fetching quote...", right-click the page, click "Inspect", and look at the "Console" tab for red error messages.</em></p>
+
+  <script>
+    // 1. Tell the console we are starting
+    console.log("Attempting to reach the API...");
+
+    // 2. Call the API
+    fetch("https://github-pages-backend.onrender.com/random-quote")
+      .then(response => {
+        console.log("Received a response from the server!", response);
+        
+        // Check if the server returned a success code (like 200 OK)
+        if (!response.ok) {
+          throw new Error("Server returned an error: " + response.status);
+        }
+        return response.json();
+      })
+      .then(data => {
+        // 3. Print the exact data to the console so you can see its true shape
+        console.log("Successfully parsed JSON data:", data);
+
+        const textEl = document.getElementById("quote-text");
+        const authorEl = document.getElementById("quote-author");
+
+        // 4. Inject it into the HTML. 
+        // We check for both "quote-text" and "quote" just to be completely safe.
+        const actualQuote = data["quote-text"] || data.quote;
+        const actualAuthor = data["quote-author"] || data.author;
+
+        textEl.innerText = `"${actualQuote}"`;
+        authorEl.innerText = `- ${actualAuthor}`;
+      })
+      .catch(error => {
+        // 5. If ANYTHING goes wrong (CORS error, server sleeping, offline), catch it here
+        console.error("The fetch failed!", error);
+        document.getElementById("quote-text").innerText = "Error: Could not load quote. Check the console.";
+      });
+  </script>
+
+</body>
+</html>
