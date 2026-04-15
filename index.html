@@ -58,7 +58,6 @@
       position: relative;
       display: inline-block;
       background: transparent;
-      /* The image will set the size */
     }
     .tv-frame-overlay {
       display: block;
@@ -70,7 +69,6 @@
       z-index: 2;
       pointer-events: none;
     }
-    /* Stretch video box all the way to the right, with left and right margins */
     .tv-screen-embed,
     .tv-screen-white-noise {
       position: absolute;
@@ -95,27 +93,45 @@
       object-fit: cover;
       display: block;
     }
+    
+    /* --- INJECTED: Quote Widget Styles --- */
+    .quote-widget {
+      margin-top: 60px;
+      padding: 24px;
+      background: #423013; 
+      border-left: 6px solid #6d5632; 
+      border-radius: 4px;
+      max-width: 700px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    }
+    .quote-text {
+      font-size: 1.2em;
+      line-height: 1.6;
+      margin-bottom: 15px;
+    }
+    .quote-author {
+      text-align: right;
+      font-size: 1.1em;
+      color: #ddd;
+    }
+
     @media(max-width: 900px) {
       .container { flex-direction: column; }
       .sidebar, .panel { width: 100%; min-width: unset; }
       .pdf-viewer { height: 40vh; min-height: 180px; }
       .tv-frame-container { height: 40vh; }
       .tv-frame-image { min-width: unset; }
-      .tv-frame-overlay {
-        max-width: 98vw;
-        max-height: 40vh;
-      }
+      .tv-frame-overlay { max-width: 98vw; max-height: 40vh; }
       .tv-screen-embed,
       .tv-screen-white-noise {
         left: 6vw;
-        right: 12vw; /* right margin larger than left */
+        right: 12vw; 
         top: 16px;
         bottom: 16px;
         width: auto;
         height: auto;
       }
     }
-    /* Style for extra video content/passage */
     .video-extra-content {
       margin: 32px auto 0 auto;
       padding: 24px;
@@ -145,16 +161,13 @@
       <ul id="video-files-list"></ul>
     </div>
     <div class="main-content" id="main-content">
-      <h1>Welcome to My Website</h1>
-    </div>
+      </div>
   </div>
   <script>
-    // PDF files data
     const pdfFiles = [
       { name: "Arab Revolt of 1916", url: "publishings/path-to-arab-revolt.pdf" }
     ];
 
-    // Video data (YouTube or MP4), now with unique IDs
     const videoFiles = [
       {
         id: "stalkers-lament",
@@ -168,7 +181,6 @@
       }
     ];
 
-    // Extra content for videos, keyed by video ID
     const videoExtraContent = {
       "stalkers-lament": `
         <div class="video-extra-content">
@@ -189,11 +201,62 @@
           <em>Voiceover generated with <a href="https://github.com/hmezer/TorToiSe-TTS-RVC-Voice-Generation" target="_blank" rel="noopener">TorToiSe-RVC pipeline</a>.</em>
         </div>
       `
-      // Add other video passages here if needed, keyed by their IDs
     };
 
+    // --- INJECTED: API Variables & Functions ---
+    let cachedQuote = null;
+
+    async function fetchQuote() {
+      const textEl = document.getElementById("quote-text");
+      const authorEl = document.getElementById("quote-author");
+
+      if (cachedQuote) {
+        displayQuote(cachedQuote);
+        return;
+      }
+
+      if (textEl && authorEl) {
+        textEl.innerHTML = "<em>Waking up the server... (This can take up to 60 seconds on the first visit!)</em>";
+        authorEl.innerHTML = "";
+      }
+
+      try {
+        const response = await fetch("https://github-pages-backend.onrender.com/random-quote");
+        if (!response.ok) throw new Error("Server error");
+        
+        const data = await response.json();
+        cachedQuote = data; 
+        
+        displayQuote(data);
+      } catch (error) {
+        console.error("The API failed:", error);
+        // Re-grab the element in case the user switched pages and came back
+        const freshTextEl = document.getElementById("quote-text");
+        if (freshTextEl) {
+          freshTextEl.innerHTML = "<em>(The archives are currently resting. Please try refreshing in a moment...)</em>";
+        }
+      }
+    }
+
+    function displayQuote(data) {
+      // Re-grab the elements to ensure they exist in the DOM right now
+      const textEl = document.getElementById("quote-text");
+      const authorEl = document.getElementById("quote-author");
+      
+      if (textEl && authorEl) {
+        // Using bracket notation to safely handle keys with hyphens
+        textEl.innerHTML = `"${data["quote-text"] || data.quote}"`;
+        authorEl.innerHTML = `<i>- ${data["quote-author"] || data.author}</i>`;
+      }
+    }
+
+    // --- UPDATED: contentMap to include the quote HTML ---
     const contentMap = {
-      home: `<h1><em>Welcome! Willkommen! Hoşgeldiniz!</em></h1>`,
+      home: `<h1><em>Welcome! Willkommen! Hoşgeldiniz!</em></h1>
+        <div class="quote-widget" id="quote-widget">
+          <div class="quote-text" id="quote-text">Consulting the archives for today's thought...</div>
+          <div class="quote-author" id="quote-author"></div>
+        </div>`,
       about: `<h1>About Me</h1>
         <p>I hold dual Bachelor’s degrees in Economics and International Relations from Koç University, where my love for history and philosophy also found a home. Currently, I’m pursuing a Master of Science in Econometrics at TU Dortmund, blending analytical rigor with curiosity about how the world ticks. Beyond the classroom, you’ll often find me strumming the guitar or saz, or tinkering with new technologies—whether it’s generative AI, digital tools, or hands-on creations. I thrive on learning, experimenting, and building—both in code and in craft.</p>
         <br>
@@ -227,7 +290,6 @@
       document.getElementById('video-list-panel').style.display = 'none';
     }
 
-    // --- Background image logic ---
     function setBackgroundImage(section) {
       const mainContent = document.getElementById('main-content');
       if (section === 'home') {
@@ -237,10 +299,16 @@
       }
     }
 
+    // --- UPDATED: showContent to trigger the API fetch ---
     function showContent(section) {
       document.getElementById('main-content').innerHTML = contentMap[section];
       setBackgroundImage(section);
       hidePanels();
+      
+      // If the user navigates to the home page, fetch and display the quote
+      if (section === 'home') {
+        fetchQuote();
+      }
     }
 
     function showPdfSection() {
