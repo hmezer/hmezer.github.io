@@ -1,3 +1,9 @@
 20260411::14:35
 The quote is not displaying and it is not possible at the time to inspect the network of the webpage, being in public computer.
 Check the network messages or errors when the website is loaded at private computer to determine the root cause of quote is not displaying.
+
+20260415::15:24
+It turns out I was integrating the API use into a wrong file named `main1.html`. Updating the `index.html` file gave the proper output.
+
+20260415::15:25
+I separated the `index.html` into HTML, CSS, and JS components with three new files instead, named `index.html`, `style.css`. and `script.js`, each containing the respective language and components.
