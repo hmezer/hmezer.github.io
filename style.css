@@ -39,6 +39,8 @@ body {
   background-size: cover;
   background-position: center;
   transition: background-image 0.5s ease;
+  /* ADD THIS LINE: This makes it the anchor point for the quote */
+  position: relative;
 }
 .pdf-viewer { width: 100%; min-height: 400px; height: 70vh; border: none; background: #fff; }
 .tv-frame-container {
@@ -86,15 +88,17 @@ body {
   object-fit: cover;
   display: block;
 }
-
-/* Quote Widget Styles */
 .quote-widget {
-  margin-top: 60px;
+  /* These lines move it to the bottom right */
+  position: absolute;
+  bottom: 40px;
+  right: 30px;
+  /* The rest remains the same */
   padding: 24px;
   background: #423013; 
   border-left: 6px solid #6d5632; 
   border-radius: 4px;
-  max-width: 700px;
+  max-width: 600px; /* I slightly reduced this so it doesn't stretch too far left */
   box-shadow: 0 4px 12px rgba(0,0,0,0.3);
 }
 .quote-text {
@@ -111,6 +115,14 @@ body {
 @media(max-width: 900px) {
   .container { flex-direction: column; }
   .sidebar, .panel { width: 100%; min-width: unset; }
+  /* THIS BLOCK resets the quote on mobile */
+  .quote-widget {
+    position: relative;
+    bottom: unset;
+    right: unset;
+    margin-top: 40px;
+    max-width: 100%;
+  }
   .pdf-viewer { height: 40vh; min-height: 180px; }
   .tv-frame-container { height: 40vh; }
   .tv-frame-image { min-width: unset; }
