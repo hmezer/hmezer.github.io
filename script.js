@@ -37,8 +37,11 @@ const videoExtraContent = {
   `
 };
 
+// --- API Variables ---
 let cachedQuote = null;
+let cachedProjects = null;
 
+// --- Quote Fetching Logic ---
 async function fetchQuote() {
   const textEl = document.getElementById("quote-text");
   const authorEl = document.getElementById("quote-author");
@@ -80,6 +83,57 @@ function displayQuote(data) {
   }
 }
 
+// --- GitHub Fetching Logic ---
+async function fetchProjects() {
+  const container = document.getElementById("projects-container");
+  
+  // If we already fetched them, use the cached version
+  if (cachedProjects) {
+    displayProjects(cachedProjects);
+    return;
+  }
+
+  try {
+    // Fetch the 6 most recently updated repositories
+    const response = await fetch("https://api.github.com/users/hmezer/repos?sort=updated&per_page=6");
+    if (!response.ok) throw new Error("GitHub API failed");
+    
+    const data = await response.json();
+    cachedProjects = data; 
+    displayProjects(data);
+  } catch (error) {
+    console.error("API Error:", error);
+    if (container) {
+      container.innerHTML = "<em>(The workbench is currently locked. Could not load projects.)</em>";
+    }
+  }
+}
+
+function displayProjects(repos) {
+  const container = document.getElementById("projects-container");
+  if (!container) return; // Prevent errors if the user clicked away
+
+  container.innerHTML = ""; // Clear out the loading text
+  
+  repos.forEach(repo => {
+    const description = repo.description || "No description provided.";
+    const language = repo.language || "Mixed/Unknown";
+    
+    const card = document.createElement("div");
+    card.className = "project-card";
+    
+    card.innerHTML = `
+      <h3>${repo.name}</h3>
+      <div class="project-meta">Language: ${language}</div>
+      <p>${description}</p>
+      <a href="${repo.html_url}" target="_blank" rel="noopener" class="project-link">Open Archive</a>
+    `;
+    
+    container.appendChild(card);
+  });
+}
+
+// --- Content Mapping ---
 const contentMap = {
   home: `<h1><em>Welcome! Willkommen! Hoşgeldiniz!</em></h1>
     <div class="quote-widget" id="quote-widget">
@@ -91,21 +145,30 @@ const contentMap = {
     <br>
     <h1>Contact</h1>
     <p>Hüseyin Mert Ezer</p>
-    <p>Email: ezerhuseyinmert@gmail.com</p>`
+    <p>Email: ezerhuseyinmert@gmail.com</p>`,
+  projects: `<h1>The Workbench</h1>
+    <p>A live feed of my latest projects and experiments from GitHub.</p>
+    <div id="projects-container" class="project-grid">
+      <em>Igniting the forge... (Fetching projects)</em>
+    </div>`
 };
 
 const navMap = {
   "nav-home": () => showContent('home'),
   "nav-about": () => showContent('about'),
+  "nav-projects": () => showContent('projects'),
   "nav-pdf": showPdfSection,
   "nav-video": showVideoSection
 };
 
 Object.keys(navMap).forEach(id => {
-  document.getElementById(id).addEventListener("click", () => {
-    setActiveNav(id);
-    navMap[id]();
-  });
+  const btn = document.getElementById(id);
+  if (btn) {
+    btn.addEventListener("click", () => {
+      setActiveNav(id);
+      navMap[id]();
+    });
+  }
 });
 
 function setActiveNav(activeId) {
@@ -115,8 +178,10 @@ function setActiveNav(activeId) {
 }
 
 function hidePanels() {
-  document.getElementById('pdf-list-panel').style.display = 'none';
-  document.getElementById('video-list-panel').style.display = 'none';
+  const pdfPanel = document.getElementById('pdf-list-panel');
+  const videoPanel = document.getElementById('video-list-panel');
+  if (pdfPanel) pdfPanel.style.display = 'none';
+  if (videoPanel) videoPanel.style.display = 'none';
 }
 
 function setBackgroundImage(section) {
@@ -129,12 +194,19 @@ function setBackgroundImage(section) {
 }
 
 function showContent(section) {
-  document.getElementById('main-content').innerHTML = contentMap[section];
+  const mainContent = document.getElementById('main-content');
+  if (mainContent) {
+    mainContent.innerHTML = contentMap[section];
+  }
+  
   setBackgroundImage(section);
   hidePanels();
   
+  // Fetch specific APIs based on the active tab
   if (section === 'home') {
     fetchQuote();
+  } else if (section === 'projects') {
+    fetchProjects();
   }
 }
 
