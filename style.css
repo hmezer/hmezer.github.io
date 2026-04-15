@@ -147,3 +147,60 @@ body {
   line-height: 1.7;
   color: #262315;
 }
+
+/* --- GitHub Projects Grid --- */
+/* --- STARTS HERE --- */
+.project-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 20px;
+  margin-top: 30px;
+}
+
+.project-card {
+  background: #fffbe8;
+  color: #262315;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  border-left: 6px solid #6d5632;
+  display: flex;
+  flex-direction: column;
+}
+
+.project-card h3 {
+  margin: 0 0 10px 0;
+  font-size: 1.2em;
+}
+
+.project-meta {
+  font-size: 0.85em;
+  color: #666;
+  margin-bottom: 12px;
+  font-style: italic;
+}
+
+.project-card p {
+  margin: 0 0 20px 0;
+  font-size: 0.95em;
+  line-height: 1.5;
+  flex-grow: 1;
+}
+
+.project-link {
+  display: inline-block;
+  text-decoration: none;
+  color: #eee;
+  background: #423013;
+  padding: 10px 15px;
+  border-radius: 4px;
+  text-align: center;
+  transition: background 0.2s;
+  font-weight: bold;
+}
+
+.project-link:hover {
+  background: #6d5632;
+}
+/* --- GitHub Projects Grid --- */
+/* --- ENDS HERE --- */
