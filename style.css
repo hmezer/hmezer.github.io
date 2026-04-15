@@ -41,8 +41,6 @@ body {
   transition: background-image 0.5s ease;
   /* ADD THIS LINE: This makes it the anchor point for the quote */
   position: relative;
-  /* for hardcode debugging */
-  border: 5px solid red;
 }
 .pdf-viewer { width: 100%; min-height: 400px; height: 70vh; border: none; background: #fff; }
 .tv-frame-container {
