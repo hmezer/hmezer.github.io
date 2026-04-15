@@ -314,15 +314,15 @@
           }
         });
     }
-
+    
     function displayQuote(data) {
       const textEl = document.getElementById("quote-text");
       const authorEl = document.getElementById("quote-author");
       
-      // We map data.quote to the text, and data.author to the author name!
       if (textEl && authorEl) {
-        textEl.innerHTML = `"${data.quote}"`;
-        authorEl.innerHTML = `<i>- ${data.author}</i>`;
+        // Use bracket notation to read the keys with hyphens
+        textEl.innerHTML = `"${data["quote-text"]}"`;
+        authorEl.innerHTML = `<i>- ${data["quote-author"]}</i>`;
       }
     }
 
