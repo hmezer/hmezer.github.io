@@ -1,5 +1,5 @@
 const pdfFiles = [
-  { name: "Arab Revolt of 1916", url: "publishings/path-to-arab-revolt.pdf" }
+  { name: "Arab Revolt of 1916", url: "publishings/humanities/path-to-arab-revolt.pdf" }
 ];
 
 const videoFiles = [
