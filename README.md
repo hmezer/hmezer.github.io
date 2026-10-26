@@ -1,47 +1,52 @@
 # hmezer.github.io
 
-Welcome to my personal website, hosted with **GitHub Pages**!  
-This site is a showcase of my personal projects, all built using **plain HTML, CSS, and JavaScript**—no frameworks or libraries.
+My personal website, hosted with **GitHub Pages** and built with **plain HTML, CSS, and JavaScript**. There is no framework, package manager, or build step: edit a file, refresh the browser.
 
 ### [***Click here to go to the website.***](https://hmezer.github.io)
 
-## About
+## Sections
 
-I'm passionate about web development and enjoy building things from scratch to truly understand how the web works.  
-This portfolio highlights my commitment to simplicity, performance, and learning by doing.
+Navigation uses hash routes, so every section can be linked and the Back button works.
 
-## Projects
+| Route | Section | What it shows |
+|---|---|---|
+| `#home` | Home | Welcome message and a random quote from the backend API |
+| `#about` | About | Short bio and contact details |
+| `#workbench` | Workbench | My six most recently updated GitHub repositories (forks and this site's repo are skipped) |
+| `#library`, `#library/<id>` | Library | PDFs from `publishings/`, listed in `pdfFiles` in `script.js` |
+| `#television`, `#television/<id>` | Television | YouTube videos on a retro TV frame, listed in `videoFiles` in `script.js` |
 
-Here you'll find a collection of my projects, including:
+## Structure
 
-- **Mini web apps**  
-- **Interactive experiments**
-- **Responsive layouts**
-- **UI components**
-- **Useful tools**  
-...and more—all created without frameworks or build tools.
+- `index.html` - page shell: sidebar navigation, list panels and the `<main>` content region.
+- `style.css` - shared theme and components (brown/cream palette, responsive layout around the 900px breakpoint).
+- `script.js` - content, hash routing, API calls and rendering.
+- `media/` - site imagery (backgrounds, TV frame, favicon) and the standalone `stalkers-lament.html` page.
+- `publishings/` - published PDFs (`humanities/`, `statistics/`) and a standalone PDF article page.
+- `test-page/` and `legacy/` - drafts, experiments and historical pages. They are not part of the live site.
+
+## External services
+
+- **Quote backend** - `https://github-pages-backend.onrender.com/random-quote`, hosted on Render's free tier. It can take up to a minute to wake up, so the request has a timeout and one retry, and falls back to a small built-in list of quotes with a "Try again" button.
+- **GitHub REST API** - `https://api.github.com/users/hmezer/repos`, called without authentication (60 requests per hour per IP). Results are cached in `sessionStorage` for the browser session.
+- **YouTube embeds** - the Television section embeds videos with iframes.
+
+API text is always rendered as text, never as HTML.
+
+## Working on the site
+
+There is nothing to install. To preview locally, serve the folder with any static server, for example `python -m http.server`, and open `http://localhost:8000`. Check the browser console and test at desktop and narrow widths.
+
+- New Library entry: add a PDF under `publishings/` and an `{ id, name, url }` item to `pdfFiles`.
+- New video: add an item to `videoFiles` and, if needed, matching text to `videoExtraContent`.
+- New regular section: add it to `contentMap`, a link in the sidebar, and a case in `route()`.
 
 ## Why Plain HTML/CSS/JS?
 
-- **Performance:** Lightweight sites load faster and run smoother.
-- **Learning:** Coding without frameworks deepens my understanding of the web's core technologies.
-- **Portability:** Projects can be easily shared, hosted, or reused anywhere.
-- **Fun:** There's a unique satisfaction in building things from the ground up.
-
-## How to Explore
-
-Just browse the website!  
-Each project is listed with a live demo and source code.
-
-If you want to view the source for any project:
-- Open the [repository](https://github.com/hmezer/hmezer.github.io)
-- Navigate to the relevant folder or file
+- **Performance:** a lightweight site loads fast.
+- **Learning:** working without frameworks deepens my understanding of the web's core technologies.
+- **Portability:** it can be hosted or reused anywhere.
 
 ## Contact
 
-If you have any questions or feedback, feel free to open an [issue](https://github.com/hmezer/hmezer.github.io/issues) or reach out via my GitHub profile.
-
----
-
-Thanks for visiting!
-````
+Questions or feedback are welcome through an [issue](https://github.com/hmezer/hmezer.github.io/issues) or my GitHub profile.

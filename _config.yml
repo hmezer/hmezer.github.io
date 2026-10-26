@@ -1,0 +1,8 @@
+# GitHub Pages builds this repo with Jekyll by default. Listed paths stay in the
+# repository but are not published to the live site.
+exclude:
+  - legacy
+  - test-page
+  - CLAUDE.md
+  - tasks.md
+  - README.md

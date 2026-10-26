@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>My Article</title>
+  <title>The Path to the Arab Revolt of 1916 - hmezer.github.io</title>
   <style>
     body {
       font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
@@ -12,6 +12,12 @@
       padding: 0;
       color: #333;
       min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    main {
+      flex: 1 1 0;
       display: flex;
       flex-direction: column;
     }
@@ -58,18 +64,20 @@
 </head>
 <body>
 
-  <h1>📄 My Article</h1>
+  <main>
+    <h1>The Path to the Arab Revolt of 1916</h1>
 
-  <div class="pdf-container">
-    <iframe src="./path-to-arab-revolt.pdf">
-      This browser does not support PDFs. 
-      <a href="./path-to-arab-revolt.pdf">Download the PDF</a>.
-    </iframe>
-  </div>
+    <div class="pdf-container">
+      <iframe src="./humanities/path-to-arab-revolt.pdf" title="The Path to the Arab Revolt of 1916 (PDF)">
+        This browser does not support PDFs.
+        <a href="./humanities/path-to-arab-revolt.pdf">Download the PDF</a>.
+      </iframe>
+    </div>
 
-  <div class="download-link">
-    <p>If the PDF doesn't load, you can <a href="./path-to-arab-revolt.pdf" target="_blank">open it in a new tab</a>.</p>
-  </div>
+    <div class="download-link">
+      <p>If the PDF doesn't load, you can <a href="./humanities/path-to-arab-revolt.pdf" target="_blank" rel="noopener">open it in a new tab</a>.</p>
+    </div>
+  </main>
 
 </body>
 </html>
