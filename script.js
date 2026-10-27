@@ -89,10 +89,9 @@ function createButton(label, className, onClick) {
 }
 
 // --- Quote Fetching Logic ---
-const QUOTE_URL = "https://github-pages-backend.onrender.com/random-quote";
-// The Render free tier can take up to a minute to wake: 2 attempts x 35s.
-const QUOTE_TIMEOUT_MS = 35000;
-const QUOTE_RETRIES = 1;
+// Served from this site, so there is no backend to wake up.
+const QUOTE_URL = "data/zarathustra.json";
+const QUOTE_AUTHOR = "Nietzsche";
 
 const fallbackQuotes = [
   { text: "The unexamined life is not worth living.", author: "Socrates" },
@@ -138,11 +137,16 @@ function displayFallbackQuote() {
   authorEl.append(note, createButton("Try again", "retry-button", fetchQuote));
 }
 
-function normalizeQuote(data) {
-  const text = data && (data["quote-text"] || data.quote);
-  const author = data && (data["quote-author"] || data.author);
-  if (typeof text !== "string" || typeof author !== "string" || !text) return null;
-  return { text, author };
+// Picks the same quote for everyone on a given (local) calendar day.
+function pickDailyQuote(data) {
+  const quotes = data && data.nietzsche && data.nietzsche.quotes;
+  if (!Array.isArray(quotes) || quotes.length === 0) return null;
+
+  const now = new Date();
+  const dayNumber = Math.floor(Date.UTC(now.getFullYear(), now.getMonth(), now.getDate()) / 86400000);
+  const text = quotes[dayNumber % quotes.length];
+  if (typeof text !== "string" || !text) return null;
+  return { text, author: QUOTE_AUTHOR };
 }
 
 async function fetchQuote() {
@@ -151,14 +155,13 @@ async function fetchQuote() {
     return;
   }
 
-  setQuoteMessage("Waking up the server... (This can take up to 60 seconds on the first visit!)");
+  setQuoteMessage("Consulting the archives for today's thought...");
 
   try {
     if (!quoteRequest) {
-      quoteRequest = fetchJson(QUOTE_URL, { timeoutMs: QUOTE_TIMEOUT_MS, retries: QUOTE_RETRIES })
-        .finally(() => { quoteRequest = null; });
+      quoteRequest = fetchJson(QUOTE_URL).finally(() => { quoteRequest = null; });
     }
-    const quote = normalizeQuote(await quoteRequest);
+    const quote = pickDailyQuote(await quoteRequest);
     if (!quote) throw new Error("Unexpected quote response");
 
     cachedQuote = quote;

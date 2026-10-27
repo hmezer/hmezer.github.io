@@ -22,12 +22,13 @@ Navigation uses hash routes, so every section can be linked and the Back button 
 - `style.css` - shared theme and components (brown/cream palette, responsive layout around the 900px breakpoint).
 - `script.js` - content, hash routing, API calls and rendering.
 - `media/` - site imagery (backgrounds, TV frame, favicon) and the standalone `stalkers-lament.html` page.
+- `data/` - static data loaded by `script.js` (the daily quote dataset).
 - `publishings/` - published PDFs (`humanities/`, `statistics/`) and a standalone PDF article page.
 - `test-page/` and `legacy/` - drafts, experiments and historical pages. They are not part of the live site.
 
 ## External services
 
-- **Quote backend** - `https://github-pages-backend.onrender.com/random-quote`, hosted on Render's free tier. It can take up to a minute to wake up, so the request has a timeout and one retry, and falls back to a small built-in list of quotes with a "Try again" button.
+- **Daily quote** - not an external service: `data/zarathustra.json` (copied from the former `github-pages-backend` Render service) is served with the site, and `script.js` picks the same quote for everyone on a given day. If the file fails to load, it falls back to a small built-in list of quotes with a "Try again" button.
 - **GitHub REST API** - `https://api.github.com/users/hmezer/repos`, called without authentication (60 requests per hour per IP). Results are cached in `sessionStorage` for the browser session.
 - **YouTube embeds** - the Television section embeds videos with iframes.
 

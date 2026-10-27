@@ -17,7 +17,7 @@
 - Video entries are listed in `videoFiles`; add matching supplemental copy to `videoExtraContent` when needed. TV artwork and other site imagery are under `media/`.
 - `style.css` contains the main site's shared theme and component styles. Keep new styles consistent with its brown/cream palette and existing component naming; preserve the responsive layout around the `900px` breakpoint.
 - Keep CSS organized with the existing stylesheet and component patterns; do not create a parallel styling system for the main site without a clear need.
-- The home quote and project cards use external APIs. Keep loading/error states, and render API-provided text as text rather than executable HTML.
+- The home quote is picked per day from the static `data/zarathustra.json`; the project cards use the GitHub API. Keep loading/error states, and render fetched text as text rather than executable HTML.
 
 ## Pages and directories
 
